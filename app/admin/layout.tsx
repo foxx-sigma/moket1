@@ -1,15 +1,15 @@
 import { Metadata } from "next";
-import { Sidebar } from "@/components/shared/Sidebar";
+import { AdminSidebar } from "@/components/shared/AdminSidebar";
 
 export const metadata: Metadata = {
-  title: "Dashboard Peserta | MokeT",
-  description: "Tiket dan profil akun peserta MokeT.",
+  title: "Admin Penyelenggara | MokeT",
+  description: "Dashboard pengelolaan event untuk admin penyelenggara MokeT.",
 };
 
-export default function UserLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background lg:flex">
-      <Sidebar />
+      <AdminSidebar />
       <main className="flex-1 min-w-0 flex flex-col mt-16 lg:mt-0">
         <div className="flex-1 p-4 lg:p-8">{children}</div>
       </main>

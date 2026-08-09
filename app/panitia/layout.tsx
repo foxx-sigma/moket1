@@ -1,15 +1,15 @@
 import { Metadata } from "next";
-import { Sidebar } from "@/components/shared/Sidebar";
+import { PanitiaSidebar } from "@/components/shared/PanitiaSidebar";
 
 export const metadata: Metadata = {
-  title: "Dashboard Peserta | MokeT",
-  description: "Tiket dan profil akun peserta MokeT.",
+  title: "Dashboard Panitia | MokeT",
+  description: "Area kerja panitia — QR Scanner dan koordinasi.",
 };
 
-export default function UserLayout({ children }: { children: React.ReactNode }) {
+export default function PanitiaLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background lg:flex">
-      <Sidebar />
+      <PanitiaSidebar />
       <main className="flex-1 min-w-0 flex flex-col mt-16 lg:mt-0">
         <div className="flex-1 p-4 lg:p-8">{children}</div>
       </main>

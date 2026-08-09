@@ -40,6 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+
 # PRD & FSD 
  PRD.md
  MokeT_Design_Brief (1).md
