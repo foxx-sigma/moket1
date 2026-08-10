@@ -6,21 +6,21 @@ const statusConfig: Record<
   EventStatus,
   { label: string; className: string }
 > = {
-  upcoming: {
-    label: "Segera",
-    className: "bg-moket-navy text-white hover:bg-moket-navy-dark",
+  draft: {
+    label: "Draft",
+    className: "bg-amber-500/10 text-amber-600 border border-amber-500/20 hover:bg-amber-500/20",
   },
-  ongoing: {
-    label: "Berlangsung",
-    className: "bg-moket-orange text-white hover:bg-moket-orange-dark",
+  published: {
+    label: "Published",
+    className: "bg-foreground text-background hover:bg-foreground/90",
   },
-  sold_out: {
-    label: "Habis",
-    className: "bg-moket-red text-white hover:bg-moket-red-dark",
-  },
-  closed: {
-    label: "Ditutup",
+  completed: {
+    label: "Selesai",
     className: "bg-muted text-muted-foreground hover:bg-muted",
+  },
+  cancelled: {
+    label: "Dibatalkan",
+    className: "bg-moket-red/10 text-moket-red border border-moket-red/20 hover:bg-moket-red/20",
   },
 };
 

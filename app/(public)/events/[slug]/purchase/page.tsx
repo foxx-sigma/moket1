@@ -67,8 +67,7 @@ export default function PurchasePage({
 
   const selectedTicketData = availableTickets.find(t => t.id === selectedTicket);
   const subtotal = (selectedTicketData?.price || 0) * quantity;
-  const serviceFee = subtotal > 0 ? 2500 : 0;
-  const total = subtotal + serviceFee;
+  const total = subtotal;
 
   const handleNext = () => {
     if (currentStep < steps.length) {
@@ -250,11 +249,19 @@ export default function PurchasePage({
                   </CardContent>
                 </Card>
                 
-                <div className="bg-moket-orange/10 border border-moket-orange/20 rounded-xl p-4 flex items-start gap-3 text-sm text-moket-orange-dark">
-                  <ShieldCheck className="h-5 w-5 shrink-0 mt-0.5" />
-                  <p>
-                    Data kamu dilindungi dan dienkripsi. Dengan melanjutkan, kamu menyetujui Syarat dan Ketentuan yang berlaku di MokeT.
-                  </p>
+                <div className="space-y-3">
+                  <div className="bg-moket-orange/10 border border-moket-orange/20 rounded-xl p-4 flex items-start gap-3 text-sm text-moket-orange-dark">
+                    <ShieldCheck className="h-5 w-5 shrink-0 mt-0.5" />
+                    <p>
+                      Data kamu dilindungi dan dienkripsi. Dengan melanjutkan, kamu menyetujui Syarat dan Ketentuan yang berlaku di MokeT.
+                    </p>
+                  </div>
+                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex items-start gap-3 text-sm text-blue-700">
+                    <Ticket className="h-5 w-5 shrink-0 mt-0.5" />
+                    <p>
+                      <strong>Kebijakan Refund:</strong> Tiket yang telah dibeli bersifat <em>refundable</em>. Jika kamu membatalkan pesanan, dana akan dikembalikan dengan potongan biaya layanan sebesar <strong>15%</strong> dari total harga tiket.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
@@ -325,11 +332,7 @@ export default function PurchasePage({
                       </div>
                       <span className="font-medium text-foreground">{formatPrice(subtotal)}</span>
                     </div>
-                    
-                    <div className="flex justify-between items-center text-sm text-muted-foreground">
-                      <span>Biaya Layanan</span>
-                      <span>{formatPrice(serviceFee)}</span>
-                    </div>
+
                   </div>
                   
                   <div className="p-6 bg-muted/30 border-t border-border border-dashed">

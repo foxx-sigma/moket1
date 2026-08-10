@@ -22,12 +22,7 @@ export default function EventDetailPage({
   const eventDetail = {
     ...event,
     description: "Ini adalah deskripsi panjang mengenai event yang akan diselenggarakan. Event ini bertujuan untuk mengembangkan potensi siswa di bidang teknologi dan seni. Acara akan dimeriahkan oleh berbagai penampilan menarik dari siswa berbakat SMK Telkom Malang.",
-    termsAndConditions: [
-      "Tiket yang sudah dibeli tidak dapat dikembalikan (non-refundable).",
-      "E-ticket harus ditunjukkan saat check-in.",
-      "Dilarang membawa makanan dan minuman dari luar.",
-      "Peserta wajib menjaga ketertiban selama acara berlangsung.",
-    ],
+
     time: "09:00 - Selesai",
     tickets: [
       {
@@ -65,7 +60,7 @@ export default function EventDetailPage({
     return `Rp ${price.toLocaleString("id-ID")}`;
   };
 
-  const isAvailable = eventDetail.status === "upcoming" || eventDetail.status === "ongoing";
+  const isAvailable = eventDetail.status === "draft" || eventDetail.status === "published";
 
   return (
     <div className="w-full min-h-screen bg-background">
@@ -101,11 +96,11 @@ export default function EventDetailPage({
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-full bg-background flex items-center justify-center shadow-sm">
                   <span className="text-xs font-bold text-moket-navy">
-                    {eventDetail.organizer.name.charAt(0)}
+                    {eventDetail.organization.name.charAt(0)}
                   </span>
                 </div>
                 <span className="text-sm font-medium text-foreground drop-shadow-md">
-                  Penyelenggara: {eventDetail.organizer.name}
+                  Penyelenggara: {eventDetail.organization.name}
                 </span>
               </div>
             </div>
@@ -123,7 +118,7 @@ export default function EventDetailPage({
               <div className="bg-secondary p-4 rounded-xl">
                 <Calendar className="h-5 w-5 text-moket-red mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Tanggal</p>
-                <p className="text-sm font-medium">{formatDate(eventDetail.date)}</p>
+                <p className="text-sm font-medium">{formatDate(eventDetail.startDate)}</p>
               </div>
               <div className="bg-secondary p-4 rounded-xl">
                 <Clock className="h-5 w-5 text-moket-orange mb-2" />
@@ -148,18 +143,7 @@ export default function EventDetailPage({
               </div>
             </div>
 
-            {/* Terms & Conditions */}
-            <div>
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-moket-orange" />
-                Syarat & Ketentuan
-              </h2>
-              <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
-                {eventDetail.termsAndConditions.map((term, i) => (
-                  <li key={i}>{term}</li>
-                ))}
-              </ul>
-            </div>
+
           </div>
 
           {/* Right Column - Sticky Ticket Panel */}
@@ -217,7 +201,7 @@ export default function EventDetailPage({
                     disabled
                     className="w-full h-12 text-base font-semibold"
                   >
-                    Event {eventDetail.status === "sold_out" ? "Sudah Habis" : "Ditutup"}
+                    Event {eventDetail.status === "completed" ? "Telah Selesai" : "Ditutup"}
                   </Button>
                 )}
               </div>

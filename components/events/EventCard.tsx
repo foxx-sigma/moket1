@@ -40,11 +40,11 @@ export function EventCard({ event }: { event: EventSummary }) {
             <div className="flex items-center gap-2 mb-3">
               <div className="h-6 w-6 rounded-full bg-moket-navy/10 flex items-center justify-center">
                 <span className="text-xs font-bold text-moket-navy">
-                  {event.organizer.name.charAt(0)}
+                  {event.organization.name.charAt(0)}
                 </span>
               </div>
               <span className="text-xs text-muted-foreground line-clamp-1">
-                {event.organizer.name}
+                {event.organization.name}
               </span>
             </div>
 
@@ -57,7 +57,7 @@ export function EventCard({ event }: { event: EventSummary }) {
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Calendar className="h-3.5 w-3.5 shrink-0" />
-                <span>{formatDate(event.date)}</span>
+                <span>{formatDate(event.startDate)}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5 shrink-0" />

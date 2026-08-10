@@ -4,8 +4,14 @@ import { Button } from "@/components/ui/button";
 
 export function CTASection() {
   return (
-    <section className="w-full py-20 bg-moket-navy">
-      <div className="section-container">
+    <section className="relative w-full py-20 overflow-hidden bg-black">
+      {/* Decorative Elements - red motif */}
+      <div className="absolute top-1/2 left-0 w-64 h-64 bg-red-600/10 rounded-full blur-[80px] -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+      <div className="absolute top-1/2 right-0 w-96 h-96 bg-red-800/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute top-1/4 right-1/4 w-3 h-3 bg-red-500 rounded-full opacity-60 pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/3 w-2 h-2 bg-white rounded-full opacity-20 pointer-events-none" />
+
+      <div className="section-container relative z-10">
         <div className="flex flex-col items-center text-center">
           {/* Icon */}
           <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-moket-red">

@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { Calendar, MapPin, ChevronRight, CheckCircle2 } from "lucide-react";
-import type { UserTicket } from "@/lib/types";
+import type { ETicket } from "@/lib/types";
 
-export function TicketCard({ ticket }: { ticket: UserTicket }) {
-  const isExpired = ticket.status === "expired";
-  const isUsed = ticket.status === "used";
-  const isActive = ticket.status === "active";
+export function TicketCard({ ticket }: { ticket: ETicket }) {
+  const isUsed = ticket.isUsed;
+  const isActive = !ticket.isUsed;
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("id-ID", {
@@ -35,7 +34,7 @@ export function TicketCard({ ticket }: { ticket: UserTicket }) {
         <div className="p-5 pb-8">
           <div className="flex justify-between items-start mb-3">
             <h3 className="font-bold text-foreground text-lg line-clamp-1">
-              {ticket.event.title}
+              {ticket.event?.title ?? "Event"}
             </h3>
             {isActive && (
               <span className="inline-flex items-center gap-1 rounded-full bg-moket-navy/10 px-2 py-0.5 text-xs font-semibold text-moket-navy">
@@ -47,21 +46,16 @@ export function TicketCard({ ticket }: { ticket: UserTicket }) {
                 <CheckCircle2 className="h-3 w-3" /> Dipakai
               </span>
             )}
-            {isExpired && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-muted-foreground/10 px-2 py-0.5 text-xs font-semibold text-muted-foreground">
-                Kedaluwarsa
-              </span>
-            )}
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4 text-moket-red shrink-0" />
-              <span>{formatDate(ticket.event.date)}</span>
+              <span>{ticket.event?.startDate ? formatDate(ticket.event.startDate) : "-"}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="h-4 w-4 text-moket-orange shrink-0" />
-              <span className="line-clamp-1">{ticket.event.location}</span>
+              <span className="line-clamp-1">{ticket.event?.location ?? "-"}</span>
             </div>
           </div>
         </div>
@@ -73,7 +67,7 @@ export function TicketCard({ ticket }: { ticket: UserTicket }) {
               Jenis Tiket
             </p>
             <p className="font-bold text-foreground mt-0.5">
-              {ticket.ticketType.name}
+              {ticket.ticketType?.name ?? "-"}
             </p>
           </div>
           <div className="flex flex-col items-end">

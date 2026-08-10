@@ -27,10 +27,10 @@ import { Card, CardContent } from "@/components/ui/card";
 type EventStatus = "draft" | "published" | "completed" | "cancelled";
 
 const mockEvents = [
-  { id: "evt-001", title: "Moklet Fest 2026", date: "15 Sep 2026", category: "Musik", ticketsSold: 623, quota: 1000, status: "published" as EventStatus },
-  { id: "evt-002", title: "Tech Talk: AI & Future", date: "22 Sep 2026", category: "Seminar", ticketsSold: 180, quota: 300, status: "published" as EventStatus },
-  { id: "evt-003", title: "Workshop Design UI/UX", date: "10 Okt 2026", category: "Workshop", ticketsSold: 45, quota: 100, status: "draft" as EventStatus },
-  { id: "evt-004", title: "English Speaking Club", date: "1 Agt 2026", category: "Bahasa", ticketsSold: 400, quota: 400, status: "completed" as EventStatus },
+  { id: "evt-001", title: "Moklet Fest 2026", startDate: "15 Sep 2026", category: "Musik", ticketsSold: 623, quota: 1000, status: "published" as EventStatus },
+  { id: "evt-002", title: "Tech Talk: AI & Future", startDate: "22 Sep 2026", category: "Seminar", ticketsSold: 180, quota: 300, status: "published" as EventStatus },
+  { id: "evt-003", title: "Workshop Design UI/UX", startDate: "10 Okt 2026", category: "Workshop", ticketsSold: 45, quota: 100, status: "draft" as EventStatus },
+  { id: "evt-004", title: "English Speaking Club", startDate: "1 Agt 2026", category: "Bahasa", ticketsSold: 400, quota: 400, status: "completed" as EventStatus },
 ];
 
 const statusConfig: Record<EventStatus, { label: string; className: string }> = {
@@ -97,7 +97,7 @@ export default function AdminEventsPage() {
                         <Badge className={`text-[10px] border ${status.className}`}>{status.label}</Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        {event.date} • {event.category}
+                        {event.startDate} • {event.category}
                       </p>
                     </div>
 

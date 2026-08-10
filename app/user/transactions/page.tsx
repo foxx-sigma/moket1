@@ -78,7 +78,7 @@ export default function TransactionsPage() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Cari Order ID atau nama event..."
+            placeholder="Cari Invoice Number atau nama event..."
             className="pl-9 bg-background"
           />
         </div>
@@ -100,7 +100,7 @@ export default function TransactionsPage() {
           <Table>
             <TableHeader className="bg-muted/50">
               <TableRow>
-                <TableHead className="w-[180px]">Order ID / Waktu</TableHead>
+                <TableHead className="w-[180px]">Invoice Number / Waktu</TableHead>
                 <TableHead>Event & Tiket</TableHead>
                 <TableHead>Metode Pembayaran</TableHead>
                 <TableHead className="text-right">Total</TableHead>
@@ -113,17 +113,17 @@ export default function TransactionsPage() {
                 mockTransactions.map((trx) => (
                   <TableRow key={trx.id} className="group hover:bg-muted/30">
                     <TableCell>
-                      <div className="font-medium text-foreground">{trx.orderId}</div>
+                      <div className="font-medium text-foreground">{trx.invoiceNumber}</div>
                       <div className="text-xs text-muted-foreground mt-1">
                         {formatDate(trx.createdAt)}
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="font-semibold text-foreground line-clamp-1">
-                        {trx.event.title}
+                        {trx.event?.title}
                       </div>
                       <div className="text-xs text-muted-foreground mt-1">
-                        {trx.quantity}x {trx.ticketType.name}
+                        {trx.items[0]?.quantity}x {trx.items[0]?.ticketType?.name}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -133,16 +133,16 @@ export default function TransactionsPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="font-bold text-foreground">
-                        {trx.total === 0 ? "Gratis" : formatPrice(trx.total)}
+                        {trx.totalAmount === 0 ? "Gratis" : formatPrice(trx.totalAmount)}
                       </div>
                     </TableCell>
                     <TableCell className="text-center">
                       <span
                         className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusColor(
-                          trx.paymentStatus
+                          trx.status
                         )}`}
                       >
-                        {getStatusLabel(trx.paymentStatus)}
+                        {getStatusLabel(trx.status)}
                       </span>
                     </TableCell>
                     <TableCell className="text-center">

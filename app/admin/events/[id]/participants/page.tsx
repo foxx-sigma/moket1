@@ -12,17 +12,17 @@ interface Participant {
   id: string;
   name: string;
   ticketType: string;
-  purchasedAt: string;
+  createdAt: string;
   checkedIn: boolean;
   checkedInAt?: string;
 }
 
 const mockParticipants: Participant[] = [
-  { id: "p-001", name: "Ahmad Fadhil", ticketType: "Presale 1", purchasedAt: "10 Agt 2026", checkedIn: true, checkedInAt: "09:14 WIB" },
-  { id: "p-002", name: "Budi Santoso", ticketType: "Normal", purchasedAt: "12 Agt 2026", checkedIn: false },
-  { id: "p-003", name: "Citra Dewi", ticketType: "Presale 2", purchasedAt: "11 Agt 2026", checkedIn: true, checkedInAt: "09:32 WIB" },
-  { id: "p-004", name: "Dani Wijaya", ticketType: "Normal", purchasedAt: "13 Agt 2026", checkedIn: false },
-  { id: "p-005", name: "Eka Fitriani", ticketType: "Presale 1", purchasedAt: "10 Agt 2026", checkedIn: true, checkedInAt: "10:01 WIB" },
+  { id: "p-001", name: "Ahmad Fadhil", ticketType: "Presale 1", createdAt: "10 Agt 2026", checkedIn: true, checkedInAt: "09:14 WIB" },
+  { id: "p-002", name: "Budi Santoso", ticketType: "Normal", createdAt: "12 Agt 2026", checkedIn: false },
+  { id: "p-003", name: "Citra Dewi", ticketType: "Presale 2", createdAt: "11 Agt 2026", checkedIn: true, checkedInAt: "09:32 WIB" },
+  { id: "p-004", name: "Dani Wijaya", ticketType: "Normal", createdAt: "13 Agt 2026", checkedIn: false },
+  { id: "p-005", name: "Eka Fitriani", ticketType: "Presale 1", createdAt: "10 Agt 2026", checkedIn: true, checkedInAt: "10:01 WIB" },
 ];
 
 export default function AdminParticipantsPage({ params }: { params: { id: string } }) {
@@ -87,7 +87,7 @@ export default function AdminParticipantsPage({ params }: { params: { id: string
             <div>
               <p className="font-semibold text-sm text-foreground">{p.name}</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {p.ticketType} • Beli: {p.purchasedAt}
+                {p.ticketType} • Beli: {p.createdAt}
               </p>
             </div>
             <div className="text-right">

@@ -4,19 +4,19 @@ import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
-    <section className="relative w-full overflow-hidden bg-moket-navy">
-      {/* Decorative Elements - solid shapes, no gradients */}
-      <div className="absolute top-0 right-0 w-72 h-72 bg-moket-red/10 rounded-full -translate-y-1/2 translate-x-1/3" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-moket-orange/5 rounded-full translate-y-1/2 -translate-x-1/3" />
-      <div className="absolute top-1/2 right-1/4 w-4 h-4 bg-moket-red rounded-full opacity-40" />
-      <div className="absolute top-1/3 left-1/4 w-3 h-3 bg-moket-orange rounded-full opacity-30" />
+    <section className="relative w-full overflow-hidden bg-black">
+      {/* Decorative Elements - red motif */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-red-800/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/4 pointer-events-none" />
+      <div className="absolute top-1/2 right-1/4 w-4 h-4 bg-red-500 rounded-full opacity-60" />
+      <div className="absolute top-1/3 left-1/4 w-3 h-3 bg-red-400 rounded-full opacity-50" />
       <div className="absolute bottom-1/4 right-1/3 w-2 h-2 bg-white rounded-full opacity-20" />
 
       <div className="section-container relative z-10">
         <div className="flex flex-col items-center justify-center min-h-[560px] py-20 text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 mb-8">
-            <Ticket className="h-4 w-4 text-moket-orange" />
+            <Ticket className="h-4 w-4 text-white" />
             <span className="text-sm font-medium text-white/90">
               Moklet Go Global 2026
             </span>

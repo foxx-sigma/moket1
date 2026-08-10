@@ -1,158 +1,266 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import { QrCode, ChevronDown, Calendar, MapPin, Download } from "lucide-react";
+import Link from "next/link";
+import {
+  Ticket,
+  CalendarDays,
+  ReceiptText,
+  MapPin,
+  Clock,
+  ArrowRight,
+  QrCode,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
 
-const mockTickets = [
+// Mock data — diganti dengan API call saat integrasi backend
+const mockStats = {
+  activeTickets: 2,
+  upcomingEvents: 3,
+  totalTransactions: 5,
+};
+
+const mockUpcomingEvents = [
   {
-    id: "tkt-001",
-    eventTitle: "Moklet Fest 2026",
-    eventDate: "15 September 2026",
-    eventTime: "09:00 WIB",
+    id: "evt-1",
+    title: "Moklet Fest 2026",
+    date: "15 September 2026",
+    time: "09:00 WIB",
     location: "Aula Utama SMK Telkom Malang",
     ticketType: "Presale 1",
-    attendeeName: "Ahmad Fadhil",
-    qrCode: "MOKET-TKT-001-ABCXYZ",
-    status: "active" as const,
+    daysLeft: 36,
   },
   {
-    id: "tkt-002",
-    eventTitle: "Tech Talk: AI & Future",
-    eventDate: "22 September 2026",
-    eventTime: "13:00 WIB",
+    id: "evt-2",
+    title: "Tech Talk: AI & Future",
+    date: "22 September 2026",
+    time: "13:00 WIB",
     location: "Lab Komputer Gedung C",
     ticketType: "Normal",
-    attendeeName: "Ahmad Fadhil",
-    qrCode: "MOKET-TKT-002-DEFUVW",
-    status: "active" as const,
+    daysLeft: 43,
   },
 ];
 
-const statusConfig = {
-  active: { label: "Aktif", color: "bg-green-500/10 text-green-600 border-green-500/20" },
-  used: { label: "Terpakai", color: "bg-muted text-muted-foreground" },
-  expired: { label: "Kadaluarsa", color: "bg-red-500/10 text-red-600 border-red-500/20" },
+const mockRecentTransactions = [
+  {
+    id: "trx-1",
+    invoiceNumber: "INV-20260801-ABC123",
+    eventTitle: "Moklet Fest 2026",
+    totalAmount: 25000,
+    status: "success" as const,
+    createdAt: "1 Agustus 2026",
+  },
+  {
+    id: "trx-2",
+    invoiceNumber: "INV-20260802-XYZ987",
+    eventTitle: "Tech Talk: AI & Future",
+    totalAmount: 0,
+    status: "success" as const,
+    createdAt: "2 Agustus 2026",
+  },
+  {
+    id: "trx-3",
+    invoiceNumber: "INV-20260804-DEF456",
+    eventTitle: "Inter-School Basketball",
+    totalAmount: 30000,
+    status: "pending" as const,
+    createdAt: "4 Agustus 2026",
+  },
+];
+
+const transactionStatusConfig = {
+  pending: { label: "Menunggu", className: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
+  success: { label: "Berhasil", className: "bg-green-500/10 text-green-600 border-green-500/20" },
+  failed: { label: "Gagal", className: "bg-red-500/10 text-red-600 border-red-500/20" },
+  expired: { label: "Kedaluwarsa", className: "bg-muted text-muted-foreground border-border" },
 };
 
-function QRCodeDisplay({ value }: { value: string }) {
-  // Simple visual QR placeholder — replace with actual QR lib like qrcode.react
-  return (
-    <div className="flex flex-col items-center gap-3 bg-white p-4 rounded-xl border border-border shadow-sm">
-      <div className="w-36 h-36 bg-foreground/5 rounded-lg flex items-center justify-center border-2 border-dashed border-border">
-        <QrCode className="h-20 w-20 text-foreground/60" strokeWidth={1.5} />
-      </div>
-      <p className="text-[10px] font-mono text-muted-foreground tracking-widest text-center break-all">
-        {value}
-      </p>
-    </div>
-  );
-}
+const currencyFormatter = new Intl.NumberFormat("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  minimumFractionDigits: 0,
+});
 
-function TicketCard({ ticket }: { ticket: typeof mockTickets[0] }) {
-  const [expanded, setExpanded] = useState(false);
-  const status = statusConfig[ticket.status];
-
-  return (
-    <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-sm">
-      {/* Tiket Header */}
-      <div className="bg-moket-red p-4 text-white">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <h3 className="font-bold text-base leading-tight">{ticket.eventTitle}</h3>
-            <p className="text-xs text-red-100 mt-0.5">{ticket.ticketType}</p>
-          </div>
-          <Badge className={`text-xs border ${status.color} bg-transparent shrink-0`}>
-            {status.label}
-          </Badge>
-        </div>
-      </div>
-
-      {/* Notch divider */}
-      <div className="ticket-notch h-[1px] bg-border mx-5 relative" />
-
-      {/* Tiket Body */}
-      <div className="p-4 space-y-3">
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Calendar className="h-4 w-4 shrink-0" />
-            <span>{ticket.eventDate} • {ticket.eventTime}</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground col-span-2">
-            <MapPin className="h-4 w-4 shrink-0" />
-            <span className="line-clamp-1">{ticket.location}</span>
-          </div>
-        </div>
-
-        {/* Expand button */}
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full justify-center gap-1 text-moket-red hover:bg-moket-red/5 text-xs"
-          onClick={() => setExpanded(!expanded)}
-        >
-          {expanded ? "Sembunyikan QR Code" : "Tampilkan QR Code"}
-          <ChevronDown
-            className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`}
-          />
-        </Button>
-
-        {expanded && (
-          <div className="flex flex-col items-center gap-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-200">
-            <p className="text-xs text-muted-foreground text-center">
-              Tunjukkan QR ini ke panitia saat masuk venue.
-            </p>
-            <QRCodeDisplay value={ticket.qrCode} />
-            <p className="text-sm font-semibold text-foreground">{ticket.attendeeName}</p>
-            <Button variant="outline" size="sm" className="gap-2 text-xs">
-              <Download className="h-3.5 w-3.5" />
-              Unduh E-Ticket
-            </Button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+const summaryCards = [
+  {
+    title: "Tiket Aktif",
+    value: mockStats.activeTickets,
+    sub: "Siap digunakan",
+    icon: Ticket,
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
+    href: "/user/my-tickets",
+  },
+  {
+    title: "Event Mendatang",
+    value: mockStats.upcomingEvents,
+    sub: "Yang kamu ikuti",
+    icon: CalendarDays,
+    color: "text-blue-600",
+    bg: "bg-blue-500/10",
+    href: "/events",
+  },
+  {
+    title: "Total Transaksi",
+    value: mockStats.totalTransactions,
+    sub: "Riwayat pembelian",
+    icon: ReceiptText,
+    color: "text-emerald-600",
+    bg: "bg-emerald-500/10",
+    href: "/user/transactions",
+  },
+];
 
 export default function UserDashboardPage() {
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Tiket Saya</h1>
+        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Daftar e-ticket yang kamu miliki. Tunjukkan QR code ke panitia saat masuk.
+          Selamat datang! Pantau tiket, event, dan transaksimu di sini.
         </p>
       </div>
 
-      {/* Ticket List */}
-      {mockTickets.length > 0 ? (
-        <div className="space-y-4">
-          {mockTickets.map((ticket) => (
-            <TicketCard key={ticket.id} ticket={ticket} />
-          ))}
-        </div>
-      ) : (
-        <Card className="border border-dashed border-border">
-          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-            <QrCode className="h-14 w-14 text-muted-foreground/40 mb-4" strokeWidth={1} />
-            <h3 className="font-semibold text-foreground mb-1">Belum Ada Tiket</h3>
-            <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-              Kamu belum memiliki tiket. Temukan event seru dan beli tiketnya sekarang!
-            </p>
-            <Link href="/events">
-              <Button className="bg-moket-red hover:bg-moket-red-dark text-white">
-                Cari Event
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {summaryCards.map((s) => (
+          <Link key={s.title} href={s.href}>
+            <Card className="border border-border hover:border-moket-red/30 hover:shadow-sm transition-all cursor-pointer group">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-xs font-medium text-muted-foreground">
+                  {s.title}
+                </CardTitle>
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${s.bg}`}>
+                  <s.icon className={`h-4 w-4 ${s.color}`} />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-foreground">{s.value}</p>
+                <p className="text-xs text-muted-foreground mt-1">{s.sub}</p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Reminder Event Terdekat */}
+        <Card className="border border-border">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <CalendarDays className="h-4 w-4 text-moket-red" />
+              Event Mendatang
+            </CardTitle>
+            <Link href="/user/my-tickets">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1 text-xs text-moket-red hover:bg-moket-red/5"
+              >
+                Lihat Tiket <ArrowRight className="h-3 w-3" />
               </Button>
             </Link>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {mockUpcomingEvents.length > 0 ? (
+              mockUpcomingEvents.map((event) => (
+                <div
+                  key={event.id}
+                  className="flex items-start gap-3 p-3 rounded-lg bg-secondary/40 hover:bg-secondary transition-colors"
+                >
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-moket-red/10 flex items-center justify-center">
+                    <QrCode className="h-5 w-5 text-moket-red" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm text-foreground truncate">
+                      {event.title}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{event.ticketType}</p>
+                    <div className="flex items-center gap-3 mt-1.5">
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3" />
+                        {event.date} • {event.time}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 mt-0.5 text-xs text-muted-foreground">
+                      <MapPin className="h-3 w-3 shrink-0" />
+                      <span className="truncate">{event.location}</span>
+                    </div>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <span className="text-xs font-semibold text-moket-red">
+                      {event.daysLeft}h lagi
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center py-8 text-center">
+                <CalendarDays className="h-10 w-10 text-muted-foreground/30 mb-3" strokeWidth={1} />
+                <p className="text-sm text-muted-foreground">Belum ada event mendatang.</p>
+                <Link href="/events" className="mt-3">
+                  <Button
+                    size="sm"
+                    className="bg-moket-red hover:bg-moket-red-dark text-white text-xs"
+                  >
+                    Cari Event
+                  </Button>
+                </Link>
+              </div>
+            )}
           </CardContent>
         </Card>
-      )}
+
+        {/* Riwayat Transaksi Terbaru */}
+        <Card className="border border-border">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <ReceiptText className="h-4 w-4 text-moket-red" />
+              Transaksi Terbaru
+            </CardTitle>
+            <Link href="/user/transactions">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1 text-xs text-moket-red hover:bg-moket-red/5"
+              >
+                Lihat Semua <ArrowRight className="h-3 w-3" />
+              </Button>
+            </Link>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {mockRecentTransactions.map((trx) => {
+              const statusCfg = transactionStatusConfig[trx.status];
+              return (
+                <Link key={trx.id} href={`/user/transactions`}>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/40 hover:bg-secondary transition-colors">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm text-foreground truncate">
+                        {trx.eventTitle}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5 font-mono">
+                        {trx.invoiceNumber}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 ml-3 shrink-0">
+                      <span className="text-sm font-semibold text-foreground">
+                        {trx.totalAmount === 0
+                          ? "Gratis"
+                          : currencyFormatter.format(trx.totalAmount)}
+                      </span>
+                      <Badge className={`text-[10px] border px-1.5 py-0 ${statusCfg.className}`}>
+                        {statusCfg.label}
+                      </Badge>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

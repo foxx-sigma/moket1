@@ -15,12 +15,6 @@
   --color-moket-red: #D81B28;
   --color-moket-red-dark: #B8151F;
   --color-moket-red-light: #F2434E;
-  --color-moket-orange: #FF6A1C;
-  --color-moket-orange-dark: #E05A12;
-  --color-moket-orange-light: #FF8547;
-  --color-moket-navy: #1A2247;
-  --color-moket-navy-dark: #111633;
-  --color-moket-navy-light: #2A3567;
 
   /* ShadCN theme mapping */
   --color-sidebar-ring: var(--sidebar-ring);
@@ -66,35 +60,35 @@
    ============================ */
 :root {
   --background: #FFFFFF;
-  --foreground: #1A2247;
+  --foreground: #010208;
   --card: #FFFFFF;
-  --card-foreground: #1A2247;
+  --card-foreground: #010208;
   --popover: #FFFFFF;
-  --popover-foreground: #1A2247;
+  --popover-foreground: #010208;
   --primary: #D81B28;
   --primary-foreground: #FFFFFF;
   --secondary: #F5F5F7;
-  --secondary-foreground: #1A2247;
+  --secondary-foreground: #010208;
   --muted: #F5F5F7;
   --muted-foreground: #64748B;
-  --accent: #FF6A1C;
+  --accent: #D81B28;
   --accent-foreground: #FFFFFF;
   --destructive: #DC2626;
   --border: #E5E7EB;
   --input: #E5E7EB;
   --ring: #D81B28;
   --chart-1: #D81B28;
-  --chart-2: #FF6A1C;
-  --chart-3: #1A2247;
+  --chart-2: #B8151F;
+  --chart-3: #010208;
   --chart-4: #64748B;
   --chart-5: #E5E7EB;
   --radius: 0.625rem;
   --sidebar: #FAFAFA;
-  --sidebar-foreground: #1A2247;
+  --sidebar-foreground: #010208;
   --sidebar-primary: #D81B28;
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #F5F5F7;
-  --sidebar-accent-foreground: #1A2247;
+  --sidebar-accent-foreground: #010208;
   --sidebar-border: #E5E7EB;
   --sidebar-ring: #D81B28;
 }
@@ -115,15 +109,15 @@
   --secondary-foreground: #F1F5F9;
   --muted: #1E2235;
   --muted-foreground: #94A3B8;
-  --accent: #FF6A1C;
+  --accent: #D81B28;
   --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
   --border: #2A2D3E;
   --input: #2A2D3E;
   --ring: #D81B28;
   --chart-1: #F2434E;
-  --chart-2: #FF8547;
-  --chart-3: #4B5EAA;
+  --chart-2: #B8151F;
+  --chart-3: #3D4060;
   --chart-4: #94A3B8;
   --chart-5: #2A2D3E;
   --sidebar: #141625;

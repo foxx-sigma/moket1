@@ -18,9 +18,9 @@ export default function ETicketDetailPage({
     notFound();
   }
 
-  const isUsed = ticket.status === "used";
-  const isExpired = ticket.status === "expired";
-  const isActive = ticket.status === "active";
+  const isUsed = ticket.isUsed;
+  const isActive = !ticket.isUsed;
+  const isExpired = false; // logic for expired handled differently in V2
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("id-ID", {
@@ -48,7 +48,7 @@ export default function ETicketDetailPage({
           <p className="text-white/70 text-sm font-medium mb-1 uppercase tracking-widest">
             E-Ticket
           </p>
-          <h1 className="text-2xl sm:text-3xl font-bold">{ticket.event.title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">{ticket.event?.title}</h1>
         </div>
 
         {/* QR Code Section */}
@@ -60,7 +60,7 @@ export default function ETicketDetailPage({
           {isActive && (
             <div className="bg-white p-4 rounded-xl border-4 border-moket-red/20 shadow-sm inline-block">
               <QRCodeSVG
-                value={ticket.qrCodeData}
+                value={ticket.qrCode}
                 size={220}
                 level="H"
                 includeMargin={true}
@@ -74,7 +74,7 @@ export default function ETicketDetailPage({
               <CheckCircle2 className="h-16 w-16 text-green-500 mb-2" />
               <p className="font-bold text-muted-foreground">Sudah Digunakan</p>
               <p className="text-sm text-muted-foreground mt-1">
-                {ticket.checkedInAt ? new Date(ticket.checkedInAt).toLocaleString("id-ID") : ""}
+                {ticket.usedAt ? new Date(ticket.usedAt).toLocaleString("id-ID") : ""}
               </p>
             </div>
           )}
@@ -86,7 +86,7 @@ export default function ETicketDetailPage({
           )}
 
           <p className="mt-6 text-sm font-medium text-muted-foreground font-mono bg-muted px-4 py-1.5 rounded-md">
-            {ticket.ticketCode}
+            {ticket.qrCode}
           </p>
           {isActive && (
             <p className="mt-4 text-sm text-center text-muted-foreground max-w-sm">
@@ -102,19 +102,19 @@ export default function ETicketDetailPage({
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
                 Nama Peserta
               </p>
-              <p className="font-semibold text-foreground">{ticket.userName}</p>
+              <p className="font-semibold text-foreground">{ticket.attendeeName}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">
                 Jenis Tiket
               </p>
-              <p className="font-semibold text-foreground">{ticket.ticketType.name}</p>
+              <p className="font-semibold text-foreground">{ticket.ticketType?.name}</p>
             </div>
             <div className="sm:col-span-2 space-y-4">
               <div className="flex items-start gap-3">
                 <Calendar className="h-5 w-5 text-moket-red shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-foreground">{formatDate(ticket.event.date)}</p>
+                  <p className="font-medium text-foreground">{ticket.event?.startDate ? formatDate(ticket.event.startDate) : "-"}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -126,7 +126,7 @@ export default function ETicketDetailPage({
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-moket-navy shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-foreground">{ticket.event.location}</p>
+                  <p className="font-medium text-foreground">{ticket.event?.location}</p>
                 </div>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function ETicketDetailPage({
                 Simpan E-Ticket
               </Button>
             )}
-            <Link href={`/events/${ticket.event.slug}`} className="w-full">
+            <Link href={`/events/${ticket.event?.slug}`} className="w-full">
               <Button variant="outline" className="w-full">
                 Lihat Detail Event
               </Button>

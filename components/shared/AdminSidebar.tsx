@@ -7,6 +7,8 @@ import {
   LayoutDashboard,
   CalendarDays,
   User,
+  Users,
+  Activity,
   LogOut,
   Menu,
   X,
@@ -16,8 +18,10 @@ import Image from "next/image";
 
 const sidebarLinks = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/events", label: "Manajemen Event", icon: CalendarDays },
-  { href: "/admin/profile", label: "Profil Organisasi", icon: User },
+  { href: "/admin/events", label: "Semua Event", icon: CalendarDays },
+  { href: "/admin/users", label: "Manajemen User", icon: Users },
+  { href: "/admin/activity", label: "Activity Log", icon: Activity },
+  { href: "/admin/profile", label: "Profil", icon: User },
 ];
 
 export function AdminSidebar() {
@@ -43,8 +47,8 @@ export function AdminSidebar() {
           <Link href="/">
             <Image src="/image/foto_tiket.png" alt="MokeT" width={120} height={40} className="h-10 w-auto object-contain" />
           </Link>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-moket-navy bg-moket-navy/10 px-2 py-0.5 rounded-full w-fit">
-            Penyelenggara
+          <span className="text-[10px] font-bold uppercase tracking-widest text-moket-red bg-moket-red/10 px-2 py-0.5 rounded-full w-fit">
+            Admin
           </span>
         </div>
 
@@ -64,11 +68,11 @@ export function AdminSidebar() {
                   onClick={() => setIsOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? "bg-moket-navy/10 text-moket-navy"
+                      ? "bg-moket-red/10 text-moket-red"
                       : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   }`}
                 >
-                  <Icon className={`h-4 w-4 ${isActive ? "text-moket-navy" : ""}`} />
+                  <Icon className={`h-4 w-4 ${isActive ? "text-moket-red" : ""}`} />
                   {link.label}
                 </Link>
               );

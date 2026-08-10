@@ -3,9 +3,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mockUserTickets } from "@/lib/mock/data";
 
 export default function MyTicketsPage() {
-  const activeTickets = mockUserTickets.filter((t) => t.status === "active");
-  const usedTickets = mockUserTickets.filter((t) => t.status === "used");
-  const expiredTickets = mockUserTickets.filter((t) => t.status === "expired");
+  const activeTickets = mockUserTickets.filter((t) => !t.isUsed);
+  const usedTickets = mockUserTickets.filter((t) => t.isUsed);
+  const expiredTickets: typeof mockUserTickets = []; // Simplified logic for mock
 
   return (
     <div className="space-y-8">

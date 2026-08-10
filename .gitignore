@@ -41,9 +41,12 @@ yarn-error.log*
 next-env.d.ts
 
 
-# PRD & FSD 
- PRD.md
- MokeT_Design_Brief (1).md
- MokeT_PRD.md
- CLAUDE.md
- implementation_plan1.md
+# PRD & FSD
+
+PRD.md
+MokeT_Design_Brief (1).md
+MokeT_PRD.md
+CLAUDE.md
+implementation_plan1.md
+AGENTS.md
+plan2.md

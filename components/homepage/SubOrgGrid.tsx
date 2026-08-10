@@ -1,4 +1,4 @@
-import { mockSubOrgs } from "@/lib/mock/data";
+import { mockOrganizations } from "@/lib/mock/data";
 
 export function SubOrgGrid() {
   return (
@@ -10,13 +10,13 @@ export function SubOrgGrid() {
             Penyelenggara
           </h2>
           <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
-            Sub-organisasi siswa yang menggelar event di SMK Telkom Malang
+            Organisasi siswa yang menggelar event di SMK Telkom Malang
           </p>
         </div>
 
         {/* Org Grid */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {mockSubOrgs.map((org) => (
+          {mockOrganizations.map((org) => (
             <div
               key={org.id}
               className="flex flex-col items-center gap-3 rounded-xl border border-border bg-background p-6 transition-all duration-200 hover:border-moket-red/30 hover:shadow-md"
@@ -33,9 +33,9 @@ export function SubOrgGrid() {
                 {org.name}
               </p>
 
-              {/* Event Count */}
+              {/* Slug */}
               <p className="text-xs text-muted-foreground">
-                {org.totalEvents} Event
+                @{org.slug}
               </p>
             </div>
           ))}
