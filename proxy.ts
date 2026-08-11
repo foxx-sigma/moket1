@@ -32,6 +32,10 @@ const PROTECTED_ROUTES: Record<string, string[]> = {
 };
 
 export function proxy(request: NextRequest) {
+  // === TEMPORARILY DISABLED ===
+  return NextResponse.next();
+  // ============================
+
   const { pathname } = request.nextUrl;
 
   // Baca cookie auth & role
