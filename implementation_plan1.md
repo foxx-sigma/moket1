@@ -304,10 +304,10 @@ lib/
 
 #### [NEW] `components/scanner/ScanResult.tsx`
 - 4 state dengan warna berbeda:
-  - ✅ **Valid** (hijau) — tampilkan nama, jenis tiket, waktu check-in
-  - ⚠️ **Sudah Digunakan** (kuning) — tampilkan waktu check-in sebelumnya
-  - ❌ **Tidak Valid** (merah)
-  - 🚫 **Bukan Event Ini** (abu-abu)
+  -  **Valid** (hijau) — tampilkan nama, jenis tiket, waktu check-in
+  -  **Sudah Digunakan** (kuning) — tampilkan waktu check-in sebelumnya
+  -  **Tidak Valid** (merah)
+  -  **Bukan Event Ini** (abu-abu)
 - Feedback instan tanpa reload
 
 #### [NEW] `components/scanner/ManualInput.tsx`
