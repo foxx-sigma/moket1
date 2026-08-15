@@ -82,10 +82,10 @@ const mockParticipantDistribution = {
 };
 
 const eventStatusConfig = {
-  published: { label: "Published", className: "bg-green-500/10 text-green-600 border-green-500/20" },
-  draft: { label: "Draft", className: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
+  published: { label: "Published", className: "bg-moket-red/10 text-moket-red border-moket-red/20" },
+  draft: { label: "Draft", className: "bg-black/5 text-black/60 border-black/10" },
   completed: { label: "Selesai", className: "bg-muted text-muted-foreground border-border" },
-  cancelled: { label: "Dibatalkan", className: "bg-red-500/10 text-red-600 border-red-500/20" },
+  cancelled: { label: "Dibatalkan", className: "bg-black/10 text-black/50 border-black/10" },
 };
 
 const currencyFormatter = new Intl.NumberFormat("id-ID", {
@@ -106,16 +106,16 @@ const metricCards = [
     title: "Total Pengguna",
     key: "totalUsers" as const,
     icon: Users,
-    color: "text-blue-600",
-    bg: "bg-blue-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
     format: (v: number) => v.toLocaleString("id-ID"),
   },
   {
     title: "Sub-Organisasi",
     key: "totalOrganizations" as const,
     icon: Building2,
-    color: "text-purple-600",
-    bg: "bg-purple-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
     format: (v: number) => v.toString(),
   },
   {
@@ -130,24 +130,24 @@ const metricCards = [
     title: "Tiket Terjual",
     key: "totalTicketsSold" as const,
     icon: Ticket,
-    color: "text-emerald-600",
-    bg: "bg-emerald-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
     format: (v: number) => v.toLocaleString("id-ID"),
   },
   {
     title: "Total Talent",
     key: "totalTalent" as const,
     icon: Mic2,
-    color: "text-amber-600",
-    bg: "bg-amber-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
     format: (v: number) => v.toString(),
   },
   {
     title: "Check-in",
     key: "totalCheckIns" as const,
     icon: ScanLine,
-    color: "text-indigo-600",
-    bg: "bg-indigo-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
     format: (v: number) => v.toLocaleString("id-ID"),
   },
 ];
@@ -195,7 +195,7 @@ export default function AdminDashboardPage() {
               onClick={() => setPeriod(p)}
               className={`text-xs px-3 py-1.5 rounded-md font-medium transition-all ${
                 period === p
-                  ? "bg-background text-foreground shadow-sm"
+                  ? "bg-moket-red text-white shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -263,7 +263,7 @@ export default function AdminDashboardPage() {
           <Card className="border border-border">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-blue-600" />
+                <TrendingUp className="h-4 w-4 text-moket-red" />
                 Distribusi Peserta
               </CardTitle>
             </CardHeader>
@@ -275,7 +275,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div className="h-2 bg-secondary rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-blue-500 rounded-full transition-all"
+                    className="h-full bg-moket-red rounded-full transition-all"
                     style={{ width: `${internalPct}%` }}
                   />
                 </div>
@@ -287,7 +287,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <div className="h-2 bg-secondary rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-purple-500 rounded-full transition-all"
+                    className="h-full bg-moket-red/40 rounded-full transition-all"
                     style={{ width: `${100 - internalPct}%` }}
                   />
                 </div>
@@ -306,10 +306,10 @@ export default function AdminDashboardPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               {[
-                { label: "Berhasil", value: mockPaymentSummary.success, color: "bg-green-500" },
-                { label: "Menunggu", value: mockPaymentSummary.pending, color: "bg-amber-500" },
-                { label: "Gagal", value: mockPaymentSummary.failed, color: "bg-red-500" },
-                { label: "Kedaluwarsa", value: mockPaymentSummary.expired, color: "bg-muted-foreground" },
+                { label: "Berhasil", value: mockPaymentSummary.success, color: "bg-moket-red" },
+                { label: "Menunggu", value: mockPaymentSummary.pending, color: "bg-moket-red/40" },
+                { label: "Gagal", value: mockPaymentSummary.failed, color: "bg-black/30" },
+                { label: "Kedaluwarsa", value: mockPaymentSummary.expired, color: "bg-black/15" },
               ].map((s) => (
                 <div key={s.label} className="flex items-center gap-2">
                   <div className={`h-2 w-2 rounded-full shrink-0 ${s.color}`} />

@@ -34,10 +34,10 @@ const mockEvents = [
 ];
 
 const statusConfig: Record<EventStatus, { label: string; className: string }> = {
-  published: { label: "Published", className: "bg-green-500/10 text-green-600 border-green-500/20" },
-  draft: { label: "Draft", className: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
+  published: { label: "Published", className: "bg-moket-red/10 text-moket-red border-moket-red/20" },
+  draft: { label: "Draft", className: "bg-black/5 text-black/60 border-black/10" },
   completed: { label: "Selesai", className: "bg-muted text-muted-foreground border-border" },
-  cancelled: { label: "Dibatalkan", className: "bg-red-500/10 text-red-600 border-red-500/20" },
+  cancelled: { label: "Dibatalkan", className: "bg-black/10 text-black/50 border-black/10" },
 };
 
 export default function AdminEventsPage() {
@@ -56,7 +56,7 @@ export default function AdminEventsPage() {
           <p className="text-sm text-muted-foreground mt-1">Kelola semua event yang kamu selenggarakan.</p>
         </div>
         <Link href="/admin/events/create">
-          <Button className="bg-moket-navy hover:bg-moket-navy-dark text-white gap-2 shrink-0">
+          <Button className="bg-moket-red hover:bg-moket-red/90 text-white gap-2 shrink-0">
             <PlusCircle className="h-4 w-4" />
             Buat Event
           </Button>
@@ -145,7 +145,7 @@ export default function AdminEventsPage() {
                     </div>
                     <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-moket-navy rounded-full transition-all"
+                        className="h-full bg-moket-red rounded-full transition-all"
                         style={{ width: `${Math.min(pct, 100)}%` }}
                       />
                     </div>

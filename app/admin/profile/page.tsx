@@ -38,7 +38,7 @@ export default function ProfilePage() {
               <div className="relative mb-4 group cursor-pointer">
                 <Avatar className="h-32 w-32 border-4 border-background shadow-md">
                   <AvatarImage src="" />
-                  <AvatarFallback className="bg-moket-navy/10 text-4xl font-bold text-moket-navy">
+                  <AvatarFallback className="bg-moket-red/10 text-4xl font-bold text-moket-red">
                     AF
                   </AvatarFallback>
                 </Avatar>

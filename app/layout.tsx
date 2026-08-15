@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     "e-ticket",
     "QR code",
   ],
+  icons: {
+    icon: "/foto_tiket.svg",
+  },
 };
 
 export default function RootLayout({
