@@ -72,8 +72,8 @@ export default function QRScannerPage() {
       <div className="grid grid-cols-2 gap-4 mb-6">
         <Card className="border-border">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-moket-orange/10 flex items-center justify-center">
-              <Users className="h-5 w-5 text-moket-orange-dark" />
+            <div className="h-10 w-10 rounded-full bg-moket-red/10 flex items-center justify-center">
+              <Users className="h-5 w-5 text-moket-red" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Check-in</p>
@@ -110,7 +110,7 @@ export default function QRScannerPage() {
             {!isScanning && (
               <Button 
                 onClick={() => setIsScanning(true)}
-                className="mt-6 w-full max-w-sm bg-moket-orange hover:bg-moket-orange-dark text-white"
+                className="mt-6 w-full max-w-sm bg-moket-red hover:bg-moket-red/90 text-white"
               >
                 Mulai Pindai QR
               </Button>

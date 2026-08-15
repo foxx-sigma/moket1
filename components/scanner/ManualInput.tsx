@@ -36,7 +36,7 @@ export function ManualInput({ onSearch, isLoading }: ManualInputProps) {
         <Button 
           type="submit" 
           disabled={!code.trim() || isLoading}
-          className="bg-moket-orange hover:bg-moket-orange-dark text-white"
+          className="bg-moket-red hover:bg-moket-red/90 text-white"
         >
           {isLoading ? "Cek..." : "Check-in"}
         </Button>

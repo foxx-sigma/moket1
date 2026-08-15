@@ -36,7 +36,7 @@ export function MentorSidebar() {
           <Link href="/">
             <Image src="/image/foto_tiket.png" alt="MokeT" width={120} height={40} className="h-10 w-auto object-contain" />
           </Link>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full w-fit">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-moket-red bg-moket-red/10 px-2 py-0.5 rounded-full w-fit">
             Mentor
           </span>
         </div>
@@ -56,11 +56,11 @@ export function MentorSidebar() {
                   onClick={() => setIsOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? "bg-emerald-500/10 text-emerald-600"
+                      ? "bg-moket-red/10 text-moket-red"
                       : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   }`}
                 >
-                  <Icon className={`h-4 w-4 ${isActive ? "text-emerald-600" : ""}`} />
+                  <Icon className={`h-4 w-4 ${isActive ? "text-moket-red" : ""}`} />
                   {link.label}
                 </Link>
               );

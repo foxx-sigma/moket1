@@ -52,11 +52,11 @@ export function PanitiaSidebar() {
                   onClick={() => setIsOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? "bg-moket-orange/10 text-moket-orange-dark"
+                      ? "bg-moket-red/10 text-moket-red"
                       : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   }`}
                 >
-                  <Icon className={`h-4 w-4 ${isActive ? "text-moket-orange-dark" : ""}`} />
+                  <Icon className={`h-4 w-4 ${isActive ? "text-moket-red" : ""}`} />
                   {link.label}
                 </Link>
               );
