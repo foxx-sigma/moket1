@@ -111,7 +111,6 @@ export default function ForgotPasswordPage() {
           <Input
             id="forgot-email"
             type="email"
-            placeholder="kamu@smktelkom-mlg.sch.id"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
