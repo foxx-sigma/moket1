@@ -56,14 +56,14 @@ const milestoneStatusConfig: Record<
   completed: {
     label: "Selesai",
     icon: CheckCircle2,
-    iconClass: "text-green-600 bg-green-500/10",
-    lineClass: "bg-green-500",
+    iconClass: "text-moket-red bg-moket-red/10",
+    lineClass: "bg-moket-red",
   },
   in_progress: {
     label: "Sedang Berjalan",
     icon: Clock,
-    iconClass: "text-blue-600 bg-blue-500/10",
-    lineClass: "bg-blue-500",
+    iconClass: "text-moket-red bg-moket-red/10",
+    lineClass: "bg-moket-red/40",
   },
   pending: {
     label: "Belum Dimulai",
@@ -146,9 +146,9 @@ export default function EventTimelinePage({
                       <Badge
                         className={`text-[10px] border shrink-0 ${
                           item.status === "completed"
-                            ? "bg-green-500/10 text-green-600 border-green-500/20"
+                            ? "bg-moket-red/10 text-moket-red border-moket-red/20"
                             : item.status === "in_progress"
-                            ? "bg-blue-500/10 text-blue-600 border-blue-500/20"
+                            ? "bg-moket-red/10 text-moket-red border-moket-red/20"
                             : "bg-muted text-muted-foreground border-border"
                         }`}
                       >

@@ -56,10 +56,10 @@ const mockRecentEvents = [
 ];
 
 const eventStatusConfig = {
-  published: { label: "Published", className: "bg-green-500/10 text-green-600 border-green-500/20" },
-  draft: { label: "Draft", className: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
+  published: { label: "Published", className: "bg-moket-red/10 text-moket-red border-moket-red/20" },
+  draft: { label: "Draft", className: "bg-black/5 text-black/50 border-black/10" },
   completed: { label: "Selesai", className: "bg-muted text-muted-foreground border-border" },
-  cancelled: { label: "Dibatalkan", className: "bg-red-500/10 text-red-600 border-red-500/20" },
+  cancelled: { label: "Dibatalkan", className: "bg-black/10 text-black/60 border-black/10" },
 };
 
 const periodLabels: Record<PeriodFilter, string> = {
@@ -73,8 +73,8 @@ const summaryCards = [
     title: "Total Event",
     key: "totalEvents" as keyof typeof mockStats,
     icon: CalendarDays,
-    color: "text-blue-600",
-    bg: "bg-blue-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
     format: (v: number) => v.toString(),
   },
   {
@@ -89,16 +89,16 @@ const summaryCards = [
     title: "Peserta Terdaftar",
     key: "totalParticipants" as keyof typeof mockStats,
     icon: Users,
-    color: "text-emerald-600",
-    bg: "bg-emerald-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
     format: (v: number) => v.toLocaleString("id-ID"),
   },
   {
     title: "Total Pendapatan",
     key: "totalRevenue" as keyof typeof mockStats,
     icon: TrendingUp,
-    color: "text-purple-600",
-    bg: "bg-purple-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
     format: (v: number) => CURRENCY_FORMATTER.format(v),
   },
 ];
@@ -125,7 +125,7 @@ export default function SubOrgDashboardPage() {
                 onClick={() => setPeriod(p)}
                 className={`text-xs px-3 py-1.5 rounded-md font-medium transition-all ${
                   period === p
-                    ? "bg-background text-foreground shadow-sm"
+                    ? "bg-moket-red text-white shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
