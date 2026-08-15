@@ -34,7 +34,7 @@ export default function ETicketDetailPage({
   return (
     <div className="max-w-2xl mx-auto py-4">
       {/* Back Button */}
-      <Link href="/my-tickets">
+      <Link href="/user/my-tickets">
         <Button variant="ghost" className="mb-6 -ml-4 text-muted-foreground">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Kembali ke Tiket Saya
@@ -44,7 +44,7 @@ export default function ETicketDetailPage({
       {/* Main Ticket Container */}
       <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-xl relative">
         {/* Top Header - Event Title */}
-        <div className="bg-moket-navy p-6 text-center text-white">
+        <div className="bg-moket-red p-6 text-center text-white">
           <p className="text-white/70 text-sm font-medium mb-1 uppercase tracking-widest">
             E-Ticket
           </p>
@@ -64,14 +64,14 @@ export default function ETicketDetailPage({
                 size={220}
                 level="H"
                 includeMargin={true}
-                fgColor="#1A2247" // moket-navy
+                fgColor="#000000"
               />
             </div>
           )}
           
           {isUsed && (
             <div className="h-[252px] w-[252px] flex flex-col items-center justify-center bg-muted/30 rounded-xl border-4 border-muted">
-              <CheckCircle2 className="h-16 w-16 text-green-500 mb-2" />
+              <CheckCircle2 className="h-16 w-16 text-black/40 mb-2" />
               <p className="font-bold text-muted-foreground">Sudah Digunakan</p>
               <p className="text-sm text-muted-foreground mt-1">
                 {ticket.usedAt ? new Date(ticket.usedAt).toLocaleString("id-ID") : ""}
@@ -118,13 +118,13 @@ export default function ETicketDetailPage({
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Clock className="h-5 w-5 text-moket-orange shrink-0 mt-0.5" />
+                <Clock className="h-5 w-5 text-moket-red shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-foreground">09:00 - Selesai</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-moket-navy shrink-0 mt-0.5" />
+                <MapPin className="h-5 w-5 text-moket-red shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-foreground">{ticket.event?.location}</p>
                 </div>

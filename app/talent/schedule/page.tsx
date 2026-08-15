@@ -30,9 +30,9 @@ const mockSchedules = [
 ];
 
 const statusConfig = {
-  draft: { label: "Menunggu Konfirmasi", color: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
-  scheduled: { label: "Terjadwal", color: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
-  ready: { label: "Standby", color: "bg-green-500/10 text-green-600 border-green-500/20" },
+  draft: { label: "Menunggu Konfirmasi", color: "bg-black/5 text-black/50 border-black/10" },
+  scheduled: { label: "Terjadwal", color: "bg-moket-red/10 text-moket-red border-moket-red/20" },
+  ready: { label: "Standby", color: "bg-moket-red/10 text-moket-red border-moket-red/20" },
   performed: { label: "Selesai", color: "bg-muted text-muted-foreground" },
 };
 
@@ -79,11 +79,11 @@ export default function TalentSchedulePage() {
                     </div>
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold flex items-center gap-1"><Clock className="h-3 w-3" /> Call Time</p>
-                      <p className="font-medium text-amber-600">{sch.callTime}</p>
+                      <p className="font-medium text-moket-red">{sch.callTime}</p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold flex items-center gap-1"><Clock className="h-3 w-3" /> Perform Time</p>
-                      <p className="font-bold text-lg text-purple-600">{sch.performTime}</p>
+                      <p className="font-bold text-lg text-moket-red">{sch.performTime}</p>
                     </div>
                  </div>
 

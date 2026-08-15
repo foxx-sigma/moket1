@@ -29,7 +29,7 @@ export function TicketCard({ ticket }: { ticket: ETicket }) {
       {/* Ticket Dashed Line */}
       <div className="absolute left-4 right-4 top-[60%] -translate-y-1/2 border-t-[1.5px] border-dashed border-border/60" />
 
-      <Link href={`/my-tickets/${ticket.id}`} className="block">
+      <Link href={`/user/my-tickets/${ticket.id}`} className="block">
         {/* Upper Part (Event Info) */}
         <div className="p-5 pb-8">
           <div className="flex justify-between items-start mb-3">
@@ -37,12 +37,12 @@ export function TicketCard({ ticket }: { ticket: ETicket }) {
               {ticket.event?.title ?? "Event"}
             </h3>
             {isActive && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-moket-navy/10 px-2 py-0.5 text-xs font-semibold text-moket-navy">
+              <span className="inline-flex items-center gap-1 rounded-full bg-moket-red/10 px-2 py-0.5 text-xs font-semibold text-moket-red">
                 Aktif
               </span>
             )}
             {isUsed && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-semibold text-green-600">
+              <span className="inline-flex items-center gap-1 rounded-full bg-black/10 px-2 py-0.5 text-xs font-semibold text-black/60">
                 <CheckCircle2 className="h-3 w-3" /> Dipakai
               </span>
             )}
@@ -54,7 +54,7 @@ export function TicketCard({ ticket }: { ticket: ETicket }) {
               <span>{ticket.event?.startDate ? formatDate(ticket.event.startDate) : "-"}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <MapPin className="h-4 w-4 text-moket-orange shrink-0" />
+              <MapPin className="h-4 w-4 text-moket-red shrink-0" />
               <span className="line-clamp-1">{ticket.event?.location ?? "-"}</span>
             </div>
           </div>

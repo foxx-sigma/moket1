@@ -26,9 +26,9 @@ const mockSessions = [
 ];
 
 const statusConfig = {
-  scheduled: { label: "Terjadwal", color: "bg-blue-500/10 text-blue-600 border-blue-500/20", icon: Clock },
-  completed: { label: "Selesai", color: "bg-green-500/10 text-green-600 border-green-500/20", icon: CheckCircle },
-  cancelled: { label: "Dibatalkan", color: "bg-red-500/10 text-red-600 border-red-500/20", icon: CheckCircle }, // Re-using icon for simplicity in mock
+  scheduled: { label: "Terjadwal", color: "bg-moket-red/10 text-moket-red border-moket-red/20", icon: Clock },
+  completed: { label: "Selesai", color: "bg-muted text-muted-foreground border-border", icon: CheckCircle },
+  cancelled: { label: "Dibatalkan", color: "bg-black/10 text-black/60 border-black/10", icon: CheckCircle },
 };
 
 export default function MentorSessionsPage() {
@@ -52,7 +52,7 @@ export default function MentorSessionsPage() {
                   <div>
                     <CardTitle className="text-lg font-bold">{session.topic}</CardTitle>
                     <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                       <div className="flex items-center gap-1.5 font-medium text-emerald-600">
+                       <div className="flex items-center gap-1.5 font-medium text-moket-red">
                          <UserIcon className="h-4 w-4" />
                          {session.talentName}
                        </div>
@@ -72,7 +72,7 @@ export default function MentorSessionsPage() {
                     </div>
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold flex items-center gap-1"><Clock className="h-3 w-3" /> Waktu</p>
-                      <p className="font-medium text-blue-600">{session.time}</p>
+                       <p className="font-medium text-moket-red">{session.time}</p>
                     </div>
                  </div>
 

@@ -21,24 +21,24 @@ const mockStats = [
     value: "3",
     sub: "Minggu ini",
     icon: CalendarClock,
-    color: "text-emerald-600",
-    bg: "bg-emerald-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
   },
   {
     title: "Talent Dibimbing",
     value: "8",
     sub: "Total talent aktif",
     icon: Users,
-    color: "text-blue-600",
-    bg: "bg-blue-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
   },
   {
     title: "Sesi Selesai",
     value: "12",
     sub: "Total sesi mentoring",
     icon: Video,
-    color: "text-purple-600",
-    bg: "bg-purple-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
   },
 ];
 
@@ -100,9 +100,9 @@ const sessionStatusConfig: Record<
   MentoringSessionStatus,
   { label: string; className: string }
 > = {
-  scheduled: { label: "Terjadwal", className: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
+  scheduled: { label: "Terjadwal", className: "bg-moket-red/10 text-moket-red border-moket-red/20" },
   completed: { label: "Selesai", className: "bg-muted text-muted-foreground border-border" },
-  cancelled: { label: "Dibatalkan", className: "bg-red-500/10 text-red-600 border-red-500/20" },
+  cancelled: { label: "Dibatalkan", className: "bg-black/10 text-black/60 border-black/10" },
 };
 
 export default function MentorDashboardPage() {
@@ -141,14 +141,14 @@ export default function MentorDashboardPage() {
         <Card className="border border-border">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
-              <Video className="h-4 w-4 text-emerald-600" />
+              <Video className="h-4 w-4 text-moket-red" />
               Sesi Mendatang
             </CardTitle>
             <Link href="/mentor/sessions">
               <Button
                 variant="ghost"
                 size="sm"
-                className="gap-1 text-xs text-emerald-600 hover:bg-emerald-500/5"
+                className="gap-1 text-xs text-moket-red hover:bg-moket-red/5"
               >
                 Lihat Semua <ArrowRight className="h-3 w-3" />
               </Button>
@@ -190,7 +190,7 @@ export default function MentorDashboardPage() {
                       >
                         <Button
                           size="sm"
-                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs mt-1"
+                          className="w-full bg-moket-red hover:bg-moket-red/90 text-white text-xs mt-1"
                         >
                           <Video className="h-3.5 w-3.5 mr-1.5" />
                           Buka Zoom
@@ -216,14 +216,14 @@ export default function MentorDashboardPage() {
         <Card className="border border-border">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
-              <Users className="h-4 w-4 text-blue-600" />
+              <Users className="h-4 w-4 text-moket-red" />
               Talent Dibimbing
             </CardTitle>
             <Link href="/mentor/sessions">
               <Button
                 variant="ghost"
                 size="sm"
-                className="gap-1 text-xs text-blue-600 hover:bg-blue-500/5"
+                className="gap-1 text-xs text-moket-red hover:bg-moket-red/5"
               >
                 Jadwal Lengkap <ArrowRight className="h-3 w-3" />
               </Button>
@@ -235,8 +235,8 @@ export default function MentorDashboardPage() {
                 key={talent.id}
                 className="flex items-center gap-3 p-3 rounded-lg bg-secondary/40 hover:bg-secondary transition-colors"
               >
-                <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
-                  <span className="text-xs font-bold text-blue-600">
+                <div className="h-8 w-8 rounded-full bg-moket-red/10 flex items-center justify-center shrink-0">
+                  <span className="text-xs font-bold text-moket-red">
                     {talent.name.charAt(0)}
                   </span>
                 </div>
@@ -247,7 +247,7 @@ export default function MentorDashboardPage() {
                 <div className="text-right shrink-0">
                   <p className="text-xs font-medium text-foreground">{talent.nextSession}</p>
                   <div className="flex items-center gap-1 justify-end mt-0.5">
-                    <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                    <CheckCircle2 className="h-3 w-3 text-moket-red" />
                     <p className="text-[10px] text-muted-foreground">{talent.sessionsCompleted} sesi</p>
                   </div>
                 </div>

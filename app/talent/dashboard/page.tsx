@@ -21,8 +21,8 @@ const mockStats = [
     value: "2",
     sub: "Jadwal tampil bulan ini",
     icon: CalendarClock,
-    color: "text-purple-600",
-    bg: "bg-purple-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
   },
   {
     title: "Total Penampilan",
@@ -37,8 +37,8 @@ const mockStats = [
     value: "1",
     sub: "Jadwal Zoom minggu ini",
     icon: Video,
-    color: "text-blue-600",
-    bg: "bg-blue-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
   },
 ];
 
@@ -83,8 +83,8 @@ const scheduleStatusConfig: Record<
   { label: string; className: string }
 > = {
   draft: { label: "Draft", className: "bg-muted text-muted-foreground border-border" },
-  scheduled: { label: "Terjadwal", className: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
-  ready: { label: "Siap", className: "bg-green-500/10 text-green-600 border-green-500/20" },
+  scheduled: { label: "Terjadwal", className: "bg-moket-red/10 text-moket-red border-moket-red/20" },
+  ready: { label: "Siap", className: "bg-moket-red/10 text-moket-red border-moket-red/20" },
   performed: { label: "Selesai", className: "bg-muted text-muted-foreground border-border" },
 };
 
@@ -124,14 +124,14 @@ export default function TalentDashboardPage() {
         <Card className="border border-border">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
-              <Mic2 className="h-4 w-4 text-purple-600" />
+              <Mic2 className="h-4 w-4 text-moket-red" />
               Jadwal Tampil
             </CardTitle>
             <Link href="/talent/schedule">
               <Button
                 variant="ghost"
                 size="sm"
-                className="gap-1 text-xs text-purple-600 hover:bg-purple-500/5"
+                className="gap-1 text-xs text-moket-red hover:bg-moket-red/5"
               >
                 Lihat Semua <ArrowRight className="h-3 w-3" />
               </Button>
@@ -158,7 +158,7 @@ export default function TalentDashboardPage() {
                     </div>
                     <p className="text-xs text-muted-foreground">{sched.location}</p>
                     <div className="pt-1">
-                      <span className="text-xs font-semibold text-purple-600">
+                      <span className="text-xs font-semibold text-moket-red">
                         {sched.daysLeft} hari lagi
                       </span>
                     </div>
@@ -181,14 +181,14 @@ export default function TalentDashboardPage() {
         <Card className="border border-border">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
-              <Video className="h-4 w-4 text-blue-600" />
+              <Video className="h-4 w-4 text-moket-red" />
               Sesi Mentoring
             </CardTitle>
             <Link href="/talent/zoom">
               <Button
                 variant="ghost"
                 size="sm"
-                className="gap-1 text-xs text-blue-600 hover:bg-blue-500/5"
+                className="gap-1 text-xs text-moket-red hover:bg-moket-red/5"
               >
                 Lihat Semua <ArrowRight className="h-3 w-3" />
               </Button>
@@ -199,10 +199,10 @@ export default function TalentDashboardPage() {
               mockMentoringSessions.map((sess) => (
                 <div
                   key={sess.id}
-                  className="p-3 rounded-lg border border-blue-500/20 bg-blue-500/5 space-y-2"
+                  className="p-3 rounded-lg border border-moket-red/20 bg-moket-red/5 space-y-2"
                 >
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-4 w-4 text-moket-red shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-sm text-foreground">{sess.topic}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">
@@ -222,7 +222,7 @@ export default function TalentDashboardPage() {
                     >
                       <Button
                         size="sm"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs mt-1"
+                        className="w-full bg-moket-red hover:bg-moket-red/90 text-white text-xs mt-1"
                       >
                         <Video className="h-3.5 w-3.5 mr-1.5" />
                         Bergabung ke Zoom

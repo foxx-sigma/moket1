@@ -29,15 +29,15 @@ export default function TransactionsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "success":
-        return "bg-green-500/10 text-green-600 border-green-200";
+        return "bg-moket-red/10 text-moket-red border-moket-red/20";
       case "pending":
-        return "bg-amber-500/10 text-amber-600 border-amber-200";
+        return "bg-black/5 text-black/50 border-black/10";
       case "failed":
-        return "bg-red-500/10 text-red-600 border-red-200";
+        return "bg-black/10 text-black/60 border-black/10";
       case "expired":
-        return "bg-slate-500/10 text-slate-600 border-slate-200";
+        return "bg-muted text-muted-foreground border-border";
       default:
-        return "bg-slate-500/10 text-slate-600 border-slate-200";
+        return "bg-muted text-muted-foreground border-border";
     }
   };
 

@@ -4,6 +4,9 @@ import { PanitiaSidebar } from "@/components/shared/PanitiaSidebar";
 export const metadata: Metadata = {
   title: "Dashboard Panitia | MokeT",
   description: "Area kerja panitia — QR Scanner dan koordinasi.",
+  icons: {
+    icon: "/foto_tiket.svg",
+  },
 };
 
 export default function PanitiaLayout({ children }: { children: React.ReactNode }) {

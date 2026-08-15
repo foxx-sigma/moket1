@@ -25,9 +25,9 @@ const mockSessions = [
 ];
 
 const statusBadge = {
-  scheduled: { label: "Terjadwal", className: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
+  scheduled: { label: "Terjadwal", className: "bg-moket-red/10 text-moket-red border-moket-red/20" },
   completed: { label: "Selesai", className: "bg-muted text-muted-foreground" },
-  cancelled: { label: "Dibatalkan", className: "bg-red-500/10 text-red-600 border-red-500/20" },
+  cancelled: { label: "Dibatalkan", className: "bg-black/10 text-black/60 border-black/10" },
 };
 
 export default function PanitiaZoomPage() {
@@ -65,7 +65,7 @@ export default function PanitiaZoomPage() {
                     href={session.joinUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium bg-moket-red hover:bg-moket-red/90 text-white transition-colors"
                   >
                     <Video className="h-3.5 w-3.5" />
                     Join Zoom

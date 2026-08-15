@@ -70,9 +70,9 @@ const mockRecentTransactions = [
 ];
 
 const transactionStatusConfig = {
-  pending: { label: "Menunggu", className: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
-  success: { label: "Berhasil", className: "bg-green-500/10 text-green-600 border-green-500/20" },
-  failed: { label: "Gagal", className: "bg-red-500/10 text-red-600 border-red-500/20" },
+  pending: { label: "Menunggu", className: "bg-black/5 text-black/50 border-black/10" },
+  success: { label: "Berhasil", className: "bg-moket-red/10 text-moket-red border-moket-red/20" },
+  failed: { label: "Gagal", className: "bg-black/10 text-black/60 border-black/10" },
   expired: { label: "Kedaluwarsa", className: "bg-muted text-muted-foreground border-border" },
 };
 
@@ -97,8 +97,8 @@ const summaryCards = [
     value: mockStats.upcomingEvents,
     sub: "Yang kamu ikuti",
     icon: CalendarDays,
-    color: "text-blue-600",
-    bg: "bg-blue-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
     href: "/events",
   },
   {
@@ -106,8 +106,8 @@ const summaryCards = [
     value: mockStats.totalTransactions,
     sub: "Riwayat pembelian",
     icon: ReceiptText,
-    color: "text-emerald-600",
-    bg: "bg-emerald-500/10",
+    color: "text-moket-red",
+    bg: "bg-moket-red/10",
     href: "/user/transactions",
   },
 ];
