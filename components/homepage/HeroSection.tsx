@@ -41,7 +41,7 @@ export function HeroSection() {
             <Link href="/events">
               <Button
                 size="lg"
-                className="bg-red-700 hover:bg-red-900 text-white px-8 h-12 text-base font-semibold"
+                className="bg-moket-red hover:bg-red-700 text-white px-8 h-12 text-base font-semibold"
               >
                 Lihat Event
                 <ArrowRight className="ml-2 h-5 w-5" />

@@ -209,27 +209,15 @@ export default function SignUpPage() {
             checked={agreedToTerms}
             onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
             disabled={isLoading}
-            className="mt-0.5"
+            className="mt-0.5 shrink-0"
           />
-          <Label htmlFor="signup-terms" className="text-sm font-normal cursor-pointer leading-relaxed">
+          <label htmlFor="signup-terms" className="text-sm font-normal cursor-pointer leading-relaxed text-foreground">
             Saya menyetujui{" "}
-            <Link
-              href="/terms"
-              className="text-moket-red hover:underline font-medium"
-              target="_blank"
-            >
-              Syarat & Ketentuan
-            </Link>{" "}
-            dan{" "}
-            <Link
-              href="/privacy"
-              className="text-moket-red hover:underline font-medium"
-              target="_blank"
-            >
-              Kebijakan Privasi
-            </Link>{" "}
-            MokeT.
-          </Label>
+            <Link href="/terms" className="text-moket-red hover:underline font-medium" target="_blank">Syarat &amp; Ketentuan</Link>
+            {" "}dan{" "}
+            <Link href="/privacy" className="text-moket-red hover:underline font-medium" target="_blank">Kebijakan Privasi</Link>
+            {" "}MokeT.
+          </label>
         </div>
 
         {/* Submit */}

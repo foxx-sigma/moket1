@@ -55,7 +55,7 @@ export function proxy(request: NextRequest) {
   );
 
   if (protectedEntry) {
-    const [, allowedRoles] = protectedEntry;
+    const allowedRoles = protectedEntry![1];
 
     // Belum login → redirect ke sign-in dengan next param
     if (!isLoggedIn) {
