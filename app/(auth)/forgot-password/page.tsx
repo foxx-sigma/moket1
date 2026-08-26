@@ -6,6 +6,7 @@ import { Loader2, AlertCircle, CheckCircle2, Mail, ArrowLeft } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { apiForgotPassword, type ApiError } from "@/lib/api";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -29,11 +30,22 @@ export default function ForgotPasswordPage() {
     }
 
     setIsLoading(true);
-    // TODO: Ganti dengan POST ke /api/auth/forgot-password (Laravel)
-    await new Promise((r) => setTimeout(r, 1200));
-    setIsLoading(false);
-    setIsSent(true);
+    try {
+      await apiForgotPassword({ email });
+      setIsSent(true);
+    } catch (err) {
+      const apiErr = err as ApiError;
+      if (apiErr.errors) {
+        const firstField = Object.values(apiErr.errors)[0];
+        setError(firstField?.[0] ?? apiErr.message);
+      } else {
+        setError(apiErr.message ?? "Gagal mengirim email. Silakan coba lagi.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
+
 
   if (isSent) {
     return (

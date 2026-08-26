@@ -1,17 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Metadata } from "next";
+import { apiLogin, type ApiError } from "@/lib/api";
 
-// Metadata perlu dipindah ke file terpisah jika ingin tetap "use client"
-// Untuk saat ini, metadata diatur di layout.tsx parent.
+// Helper: simpan cookie sederhana di browser (HttpOnly tidak bisa diset FE)
+// Cookie ini dibaca oleh proxy.ts untuk route protection.
+function setCookie(name: string, value: string, days = 7) {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+}
 
-export default function SignInPage() {
+function getPostLoginUrl(role: string): string {
+  switch (role) {
+    case "super_admin":
+      return "/admin/dashboard";
+    case "talent":
+      return "/talent/dashboard";
+    case "mentor":
+      return "/mentor/dashboard";
+    case "user":
+      // User diarahkan ke landing page agar bisa memilih event/tiket
+      return "/";
+    default:
+      return "/";
+  }
+}
+
+// --------------------------------------------------------
+// Inner component — menggunakan useSearchParams, perlu Suspense
+// --------------------------------------------------------
+function SignInForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const justRegistered = searchParams.get("registered") === "1";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -28,12 +56,30 @@ export default function SignInPage() {
     }
 
     setIsLoading(true);
-    // TODO: Ganti dengan POST ke /api/auth/login (Laravel Sanctum)
-    await new Promise((r) => setTimeout(r, 1200));
-    setIsLoading(false);
+    try {
+      const res = await apiLogin({ email, password });
 
-    // Simulasi error login
-    setError("Email atau password salah. Silakan coba lagi.");
+      // Simpan session token & role ke cookie agar proxy.ts bisa membacanya
+      setCookie("moket_session", res.token);
+      setCookie("moket_role", res.user.role);
+
+      // Redirect ke halaman sebelumnya atau URL sesuai role
+      const next = searchParams.get("next");
+      const destination = next ?? getPostLoginUrl(res.user.role);
+      router.replace(destination);
+    } catch (err) {
+      const apiErr = err as ApiError;
+
+      // Ambil pesan validasi pertama dari Laravel jika ada
+      if (apiErr.errors) {
+        const firstField = Object.values(apiErr.errors)[0];
+        setError(firstField?.[0] ?? apiErr.message);
+      } else {
+        setError(apiErr.message ?? "Login gagal. Silakan coba lagi.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -48,6 +94,17 @@ export default function SignInPage() {
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+        {/* Sukses Registrasi */}
+        {justRegistered && (
+          <div
+            role="status"
+            className="flex items-start gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-sm text-green-600"
+          >
+            <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
+            <span>Akun berhasil dibuat! Silakan masuk.</span>
+          </div>
+        )}
+
         {/* Error Alert */}
         {error && (
           <div
@@ -177,5 +234,17 @@ export default function SignInPage() {
         </Link>
       </p>
     </div>
+  );
+}
+
+// --------------------------------------------------------
+// Page export — wajib bungkus dalam Suspense karena
+// SignInForm menggunakan useSearchParams (Next.js 16)
+// --------------------------------------------------------
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="w-full h-64 animate-pulse rounded-lg bg-muted" />}>
+      <SignInForm />
+    </Suspense>
   );
 }

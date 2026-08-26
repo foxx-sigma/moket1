@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { apiRegister, type ApiError } from "@/lib/api";
 
 function getPasswordStrength(password: string): {
   score: number;
@@ -27,6 +29,8 @@ function getPasswordStrength(password: string): {
 }
 
 export default function SignUpPage() {
+  const router = useRouter();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -63,11 +67,30 @@ export default function SignUpPage() {
     }
 
     setIsLoading(true);
-    // TODO: Ganti dengan POST ke /api/auth/register (Laravel Sanctum)
-    await new Promise((r) => setTimeout(r, 1500));
-    setIsLoading(false);
-    // Setelah berhasil: redirect ke /user/onboarding
+    try {
+      await apiRegister({
+        name,
+        email,
+        password,
+        password_confirmation: confirmPassword,
+      });
+
+      // Setelah berhasil, arahkan ke sign-in dengan pesan sukses
+      router.replace("/sign-in?registered=1");
+    } catch (err) {
+      const apiErr = err as ApiError;
+
+      if (apiErr.errors) {
+        const firstField = Object.values(apiErr.errors)[0];
+        setError(firstField?.[0] ?? apiErr.message);
+      } else {
+        setError(apiErr.message ?? "Registrasi gagal. Silakan coba lagi.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
+
 
   return (
     <div className="w-full space-y-7">

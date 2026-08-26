@@ -2,19 +2,42 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { QrCode, User, LogOut, Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { QrCode, User, LogOut, Menu, X, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { apiLogout } from "@/lib/api";
 
 const sidebarLinks = [
   { href: "/user/dashboard", label: "Tiket Saya", icon: QrCode },
   { href: "/user/profile", label: "Profil", icon: User },
 ];
 
+/** Hapus cookie berdasarkan nama */
+function deleteCookie(name: string) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax`;
+}
+
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setIsLoggingOut(true);
+    try {
+      await apiLogout();
+    } catch {
+      // Ignore API error — tetap lanjutkan logout di sisi client
+    } finally {
+      // Hapus cookie auth
+      deleteCookie("moket_session");
+      deleteCookie("moket_role");
+      // Redirect ke halaman login
+      router.replace("/sign-in");
+    }
+  }
 
   return (
     <>
@@ -53,8 +76,21 @@ export function Sidebar() {
           </Link>
         </div>
 
+        {/* Tombol Beli Tiket */}
+        <div className="px-4 pt-5 pb-2">
+          <Link href="/" onClick={() => setIsOpen(false)}>
+            <Button
+              className="w-full bg-moket-red hover:bg-moket-red-dark text-white gap-2 font-semibold"
+              size="sm"
+            >
+              <Ticket className="h-4 w-4" />
+              Beli Tiket
+            </Button>
+          </Link>
+        </div>
+
         {/* Nav Links */}
-        <div className="flex-1 overflow-y-auto py-6 px-4">
+        <div className="flex-1 overflow-y-auto py-4 px-4">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
             Menu Peserta
           </p>
@@ -87,9 +123,11 @@ export function Sidebar() {
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
           >
             <LogOut className="h-4 w-4" />
-            Keluar
+            {isLoggingOut ? "Keluar..." : "Keluar"}
           </Button>
         </div>
       </aside>

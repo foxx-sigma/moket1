@@ -1,12 +1,13 @@
 // ============================================================
 // useAuth — Hook untuk membaca state autentikasi
 // ============================================================
-// Implementasi sementara (mock) — swap ke session/cookie/API
-// saat integrasi backend Laravel Sanctum.
+// Fetch user aktif dari GET /api/auth/me menggunakan cookie
+// Sanctum. Jika belum login (401), isAuthenticated = false.
 // ============================================================
 
 import { useState, useEffect } from "react";
 import type { User, UserRole, OrgMemberRole } from "@/lib/types";
+import { apiGetMe, type ApiError } from "@/lib/api";
 
 export interface AuthState {
   user: User | null;
@@ -19,17 +20,6 @@ export interface AuthState {
   isAuthenticated: boolean;
 }
 
-// Mock user — diganti dengan fetch ke /api/auth/me saat integrasi
-const MOCK_USER: User = {
-  id: "usr-fadhil",
-  name: "Ahmad Fadhil",
-  email: "fadhil@smktelkom-mlg.sch.id",
-  role: "user",
-  status: "active",
-  createdAt: "2026-01-01T00:00:00+07:00",
-  updatedAt: "2026-01-01T00:00:00+07:00",
-};
-
 export function useAuth(): AuthState {
   const [state, setState] = useState<AuthState>({
     user: null,
@@ -41,20 +31,53 @@ export function useAuth(): AuthState {
   });
 
   useEffect(() => {
-    // TODO: Ganti dengan fetch ke /api/auth/me menggunakan Sanctum token dari cookie/localStorage
-    const timer = setTimeout(() => {
-      setState({
-        user: MOCK_USER,
-        role: MOCK_USER.role,
-        orgMemberRole: null,
-        activeOrgId: null,
-        isLoading: false,
-        isAuthenticated: true,
-      });
-    }, 100);
+    let cancelled = false;
 
-    return () => clearTimeout(timer);
+    apiGetMe()
+      .then((apiUser) => {
+        if (cancelled) return;
+
+        // Map snake_case API response ke camelCase User type
+        const user: User = {
+          id: apiUser.id,
+          name: apiUser.name,
+          email: apiUser.email,
+          role: apiUser.role as UserRole,
+          status: apiUser.status as User["status"],
+          createdAt: apiUser.created_at,
+          updatedAt: apiUser.updated_at,
+        };
+
+        setState({
+          user,
+          role: user.role,
+          orgMemberRole: null,
+          activeOrgId: null,
+          isLoading: false,
+          isAuthenticated: true,
+        });
+      })
+      .catch((err: ApiError) => {
+        if (cancelled) return;
+        // 401 = belum login; lainnya = error jaringan dll
+        setState({
+          user: null,
+          role: null,
+          orgMemberRole: null,
+          activeOrgId: null,
+          isLoading: false,
+          isAuthenticated: false,
+        });
+        if (err.status !== 401) {
+          console.error("[useAuth] Gagal fetch /api/auth/me:", err.message);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return state;
 }
+

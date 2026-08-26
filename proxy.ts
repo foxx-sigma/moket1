@@ -32,10 +32,6 @@ const PROTECTED_ROUTES: Record<string, string[]> = {
 };
 
 export function proxy(request: NextRequest) {
-  // === TEMPORARILY DISABLED ===
-  return NextResponse.next();
-  // ============================
-
   const { pathname } = request.nextUrl;
 
   // Baca cookie auth & role
@@ -43,10 +39,10 @@ export function proxy(request: NextRequest) {
   const role = request.cookies.get(ROLE_COOKIE)?.value;
   const isLoggedIn = !!session;
 
-  // Jika sudah login dan mencoba akses halaman auth → redirect ke dashboard
+  // Jika sudah login dan mencoba akses halaman auth → redirect sesuai role
   if (isLoggedIn && AUTH_ONLY_PATHS.some((p) => pathname.startsWith(p))) {
-    const dashboardUrl = getDashboardUrl(role);
-    return NextResponse.redirect(new URL(dashboardUrl, request.url));
+    const redirectUrl = getPostLoginUrl(role);
+    return NextResponse.redirect(new URL(redirectUrl, request.url));
   }
 
   // Cek apakah path perlu proteksi
@@ -64,17 +60,17 @@ export function proxy(request: NextRequest) {
       return NextResponse.redirect(signInUrl);
     }
 
-    // Login tapi role salah → redirect ke dashboard yang sesuai
+    // Login tapi role salah → redirect ke halaman yang sesuai
     if (allowedRoles.length > 0 && role && !allowedRoles.includes(role)) {
-      const dashboardUrl = getDashboardUrl(role);
-      return NextResponse.redirect(new URL(dashboardUrl, request.url));
+      const redirectUrl = getPostLoginUrl(role);
+      return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
   }
 
   return NextResponse.next();
 }
 
-function getDashboardUrl(role?: string): string {
+function getPostLoginUrl(role?: string): string {
   switch (role) {
     case "super_admin":
       return "/admin/dashboard";
@@ -83,10 +79,13 @@ function getDashboardUrl(role?: string): string {
     case "mentor":
       return "/mentor/dashboard";
     case "user":
+      // User diarahkan ke landing page setelah login
+      return "/";
     default:
-      return "/user/dashboard";
+      return "/";
   }
 }
+
 
 export const config = {
   matcher: [
