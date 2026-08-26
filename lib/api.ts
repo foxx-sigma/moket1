@@ -159,10 +159,6 @@ export interface RegisterPayload {
   password_confirmation: string;
 }
 
-export interface ForgotPasswordPayload {
-  email: string;
-}
-
 export interface AuthUser {
   id: string;
   name: string;
@@ -224,14 +220,250 @@ export async function apiGetMe(): Promise<AuthUser> {
   return data.user;
 }
 
+// ============================================================
+// Homepage API
+// Endpoint: GET /api/homepage/*
+// Semua public, tidak perlu token.
+// ============================================================
+
 /**
- * POST /api/auth/forgot-password
+ * Shape response dari FeaturedEventResource (BE):
+ * id, slug, name (= judul event), posterUrl, startDate, location, organizer: { name, logoUrl }
  */
-export async function apiForgotPassword(
-  payload: ForgotPasswordPayload
-): Promise<{ message: string }> {
-  return request<{ message: string }>("api/auth/forgot-password", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+export interface FeaturedEvent {
+  id: string;
+  slug: string;
+  name: string;
+  posterUrl: string | null;
+  startDate: string;
+  location: string;
+  organizer: {
+    name: string;
+    logoUrl: string | null;
+  };
+}
+
+/**
+ * Shape response dari SubOrganizationResource (BE):
+ * id, name, slug, logoUrl, description
+ */
+export interface SubOrganization {
+  id: string;
+  name: string;
+  slug: string;
+  logoUrl: string | null;
+  description: string | null;
+}
+
+/**
+ * Shape response dari TalentHighlightResource (BE):
+ * id, name, category, bio, portfolioUrl
+ */
+export interface TalentHighlight {
+  id: string;
+  name: string;
+  category: string;
+  bio: string | null;
+  portfolioUrl: string | null;
+}
+
+/**
+ * GET /api/homepage/featured-events
+ * Maks 3 event published terdekat.
+ */
+export async function apiFeaturedEvents(): Promise<FeaturedEvent[]> {
+  return request<FeaturedEvent[]>("api/homepage/featured-events");
+}
+
+/**
+ * GET /api/homepage/sub-organizations
+ * Semua sub-organisasi aktif.
+ */
+export async function apiSubOrganizations(): Promise<SubOrganization[]> {
+  return request<SubOrganization[]>("api/homepage/sub-organizations");
+}
+
+/**
+ * GET /api/homepage/talent-highlights
+ * Talent yang punya bio, max 6.
+ */
+export async function apiTalentHighlights(): Promise<TalentHighlight[]> {
+  return request<TalentHighlight[]>("api/homepage/talent-highlights");
+}
+
+// ============================================================
+// Events API
+// Endpoint: GET /api/events, GET /api/events/{slug}
+// ============================================================
+
+/**
+ * Shape response dari EventListItemResource (BE):
+ * id, slug, name, posterUrl, category, location, scope, startDate, endDate,
+ * organizer: { id, name, logoUrl }
+ * CATATAN: Tidak ada field `priceStart` di response BE saat ini.
+ */
+export interface EventListItem {
+  id: string;
+  slug: string;
+  name: string;
+  posterUrl: string | null;
+  category: string;
+  location: string;
+  scope: "internal" | "external";
+  startDate: string;
+  endDate: string | null;
+  organizer: {
+    id: string | null;
+    name: string | null;
+    logoUrl: string | null;
+  };
+}
+
+/**
+ * Shape response dari EventDetailResource (BE):
+ * id, slug, name, posterUrl, description, category, location, scope, status,
+ * startDate, endDate, organizer: { id, name, logoUrl, description },
+ * tickets: [] (belum diisi BE), timeline: []
+ */
+export interface EventDetail {
+  id: string;
+  slug: string;
+  name: string;
+  posterUrl: string | null;
+  description: string;
+  category: string;
+  location: string;
+  scope: "internal" | "external";
+  status: "draft" | "published" | "completed" | "cancelled";
+  startDate: string;
+  endDate: string | null;
+  organizer: {
+    id: string | null;
+    name: string | null;
+    logoUrl: string | null;
+    description: string | null;
+  };
+  tickets: unknown[];
+  timeline: unknown[];
+}
+
+/**
+ * Query params untuk GET /api/events sesuai ListEventsRequest (BE).
+ */
+export interface ListEventsParams {
+  q?: string;
+  category?: string;
+  subOrg?: string;
+  scope?: "internal" | "external";
+  dateFrom?: string; // YYYY-MM-DD
+  dateTo?: string;   // YYYY-MM-DD
+  sort?: "newest" | "nearest" | "price";
+  page?: number;
+  perPage?: number;
+}
+
+/**
+ * Paginated response shape dari EventController::index.
+ * Saat data kosong BE return { data: [], meta: {...} }.
+ * Saat ada data, Laravel pagination collection dipakai.
+ */
+export interface PaginatedEvents {
+  data: EventListItem[];
+  meta: {
+    current_page: number;
+    last_page: number;
+    total: number;
+    per_page: number;
+  };
+}
+
+/**
+ * GET /api/events
+ * Discovery list event dengan filter & pagination.
+ * EventController::index mengembalikan Laravel ResourceCollection (pagination)
+ * yang TIDAK dibungkus envelope { data, message, success }.
+ */
+export async function apiGetEvents(
+  params: ListEventsParams = {}
+): Promise<PaginatedEvents> {
+  const query = new URLSearchParams();
+  if (params.q) query.set("q", params.q);
+  if (params.category) query.set("category", params.category);
+  if (params.subOrg) query.set("subOrg", params.subOrg);
+  if (params.scope) query.set("scope", params.scope);
+  if (params.dateFrom) query.set("dateFrom", params.dateFrom);
+  if (params.dateTo) query.set("dateTo", params.dateTo);
+  if (params.sort) query.set("sort", params.sort);
+  if (params.page) query.set("page", String(params.page));
+  if (params.perPage) query.set("perPage", String(params.perPage));
+
+  const qs = query.toString();
+  const path = qs ? `api/events?${qs}` : "api/events";
+  const url = `${BASE_URL}/${path}`;
+
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
+  } catch (networkErr) {
+    throw {
+      message: "Tidak dapat terhubung ke server.",
+      errors: undefined,
+      status: 0,
+    } satisfies ApiError;
+  }
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({})) as Record<string, unknown>;
+    throw {
+      message: (err?.message as string) ?? `HTTP ${res.status}`,
+      errors: (err?.errors as Record<string, string[]>) ?? undefined,
+      status: res.status,
+    } satisfies ApiError;
+  }
+
+  return res.json() as Promise<PaginatedEvents>;
+}
+
+/**
+ * GET /api/events/{slug}
+ * Detail event (hanya yang published).
+ * EventDetailResource mengembalikan { data: { ...fields } } (JsonResource wraps in data key).
+ */
+export async function apiGetEventBySlug(slug: string): Promise<EventDetail> {
+  const url = `${BASE_URL}/api/events/${encodeURIComponent(slug)}`;
+
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
+  } catch (networkErr) {
+    throw {
+      message: "Tidak dapat terhubung ke server.",
+      errors: undefined,
+      status: 0,
+    } satisfies ApiError;
+  }
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({})) as Record<string, unknown>;
+    throw {
+      message: (err?.message as string) ?? `HTTP ${res.status}`,
+      errors: (err?.errors as Record<string, string[]>) ?? undefined,
+      status: res.status,
+    } satisfies ApiError;
+  }
+
+  const body = await res.json() as { data: EventDetail };
+  return body.data;
 }

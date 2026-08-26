@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { StatusBadge } from "@/components/shared/StatusBadge";
-import type { EventSummary } from "@/lib/types";
+import type { EventListItem } from "@/lib/api";
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -13,24 +12,35 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function formatPrice(price: number): string {
-  if (price === 0) return "Gratis";
-  return `Rp ${price.toLocaleString("id-ID")}`;
-}
-
-export function EventCard({ event }: { event: EventSummary }) {
+export function EventCard({ event }: { event: EventListItem }) {
   return (
     <Link href={`/events/${event.slug}`}>
       <Card className="group h-full overflow-hidden border border-border transition-all duration-200 hover:border-moket-red/30 hover:shadow-lg">
         {/* Poster */}
         <div className="relative aspect-[16/10] bg-muted overflow-hidden">
-          <div className="absolute inset-0 flex items-center justify-center bg-moket-navy/5">
-            <span className="text-sm text-muted-foreground">
-              {event.title}
-            </span>
-          </div>
+          {event.posterUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={event.posterUrl}
+              alt={event.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-moket-navy/5">
+              <span className="text-sm text-muted-foreground">
+                {event.name}
+              </span>
+            </div>
+          )}
+          {/* Scope badge */}
           <div className="absolute top-3 left-3">
-            <StatusBadge status={event.status} />
+            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+              event.scope === "internal"
+                ? "bg-blue-100 text-blue-700"
+                : "bg-green-100 text-green-700"
+            }`}>
+              {event.scope === "internal" ? "Internal" : "Publik"}
+            </span>
           </div>
         </div>
 
@@ -40,18 +50,25 @@ export function EventCard({ event }: { event: EventSummary }) {
             <div className="flex items-center gap-2 mb-3">
               <div className="h-6 w-6 rounded-full bg-moket-navy/10 flex items-center justify-center">
                 <span className="text-xs font-bold text-moket-navy">
-                  {event.organization.name.charAt(0)}
+                  {(event.organizer.name ?? "?").charAt(0)}
                 </span>
               </div>
               <span className="text-xs text-muted-foreground line-clamp-1">
-                {event.organization.name}
+                {event.organizer.name ?? "Penyelenggara"}
               </span>
             </div>
 
-            {/* Title */}
+            {/* Name */}
             <h3 className="text-base font-semibold text-foreground line-clamp-2 group-hover:text-moket-red transition-colors mb-3">
-              {event.title}
+              {event.name}
             </h3>
+
+            {/* Category */}
+            {event.category && (
+              <span className="inline-block mb-3 text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
+                {event.category}
+              </span>
+            )}
 
             {/* Meta */}
             <div className="flex flex-col gap-1.5">
@@ -66,14 +83,8 @@ export function EventCard({ event }: { event: EventSummary }) {
             </div>
           </div>
 
-          {/* Price */}
-          <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">Mulai dari</p>
-              <p className="text-sm font-bold text-moket-red">
-                {formatPrice(event.priceStart)}
-              </p>
-            </div>
+          {/* Arrow */}
+          <div className="mt-4 pt-4 border-t border-border flex items-center justify-end">
             <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-moket-red group-hover:translate-x-1 transition-all" />
           </div>
         </CardContent>

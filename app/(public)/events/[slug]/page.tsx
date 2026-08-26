@@ -1,10 +1,35 @@
-import { use } from "react";
+"use client";
+
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, MapPin, Clock, Tag, Ticket, Info, AlertCircle } from "lucide-react";
+import { Calendar, MapPin, Clock, Tag, Ticket, Info, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "@/components/shared/StatusBadge";
-import { mockEvents } from "@/lib/mock/data";
+import { apiGetEventBySlug, type EventDetail, type ApiError } from "@/lib/api";
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function formatTime(dateStr: string): string {
+  return new Date(dateStr).toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+// Mapping status event ke label & style
+const statusConfig: Record<string, { label: string; className: string }> = {
+  published: { label: "Pendaftaran Dibuka", className: "bg-green-100 text-green-700" },
+  draft:     { label: "Segera Hadir", className: "bg-yellow-100 text-yellow-700" },
+  completed: { label: "Telah Selesai", className: "bg-gray-100 text-gray-600" },
+  cancelled: { label: "Dibatalkan", className: "bg-red-100 text-red-600" },
+};
 
 export default function EventDetailPage({
   params,
@@ -12,97 +37,117 @@ export default function EventDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const resolvedParams = use(params);
-  const event = mockEvents.find((e) => e.slug === resolvedParams.slug);
+  const [event, setEvent] = useState<EventDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFoundFlag, setNotFoundFlag] = useState(false);
 
-  if (!event) {
+  useEffect(() => {
+    let cancelled = false;
+
+    apiGetEventBySlug(resolvedParams.slug)
+      .then((data) => {
+        if (!cancelled) {
+          setEvent(data);
+          setIsLoading(false);
+        }
+      })
+      .catch((err: ApiError) => {
+        if (cancelled) return;
+        if (err.status === 404) {
+          setNotFoundFlag(true);
+        }
+        setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [resolvedParams.slug]);
+
+  if (notFoundFlag) {
     notFound();
   }
 
-  // Mock extended details since mockEvents is currently EventSummary
-  const eventDetail = {
-    ...event,
-    description: "Ini adalah deskripsi panjang mengenai event yang akan diselenggarakan. Event ini bertujuan untuk mengembangkan potensi siswa di bidang teknologi dan seni. Acara akan dimeriahkan oleh berbagai penampilan menarik dari siswa berbakat SMK Telkom Malang.",
+  if (isLoading) {
+    return (
+      <div className="w-full min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
-    time: "09:00 - Selesai",
-    tickets: [
-      {
-        id: "tkt-1",
-        name: "Presale 1",
-        price: event.priceStart,
-        quota: 100,
-        sold: 100,
-        remaining: 0,
-        status: "sold_out",
-      },
-      {
-        id: "tkt-2",
-        name: "Normal Ticket",
-        price: event.priceStart + 15000,
-        quota: 300,
-        sold: 150,
-        remaining: 150,
-        status: "available",
-      },
-    ],
-  };
+  if (!event) {
+    return (
+      <div className="w-full min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+        <AlertCircle className="h-12 w-12 text-muted-foreground" />
+        <p className="text-muted-foreground">Gagal memuat detail event.</p>
+        <Link href="/events">
+          <Button variant="outline">Kembali ke Daftar Event</Button>
+        </Link>
+      </div>
+    );
+  }
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("id-ID", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
-  const formatPrice = (price: number) => {
-    if (price === 0) return "Gratis";
-    return `Rp ${price.toLocaleString("id-ID")}`;
-  };
-
-  const isAvailable = eventDetail.status === "draft" || eventDetail.status === "published";
+  const statusInfo = statusConfig[event.status] ?? { label: event.status, className: "bg-muted text-muted-foreground" };
+  const isAvailable = event.status === "published";
 
   return (
     <div className="w-full min-h-screen bg-background">
       {/* Hero Banner */}
       <div className="relative w-full h-[40vh] md:h-[50vh] bg-muted overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center bg-moket-navy/10 backdrop-blur-md">
-          {/* Fallback pattern if no real image */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10" />
-        </div>
-        
+        {event.posterUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={event.posterUrl}
+            alt={event.name}
+            className="w-full h-full object-cover"
+          />
+        ) : null}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent z-10" />
+
         {/* Banner Content Layer */}
         <div className="absolute bottom-0 left-0 right-0 z-20 section-container pb-10">
           <div className="flex flex-col md:flex-row md:items-end gap-6">
             {/* Poster Thumbnail */}
-            <div className="hidden md:block w-48 aspect-[3/4] rounded-lg shadow-xl overflow-hidden bg-muted border-4 border-background shrink-0">
-              <div className="w-full h-full bg-moket-navy/5 flex items-center justify-center text-xs text-muted-foreground">
-                Poster
+            {event.posterUrl && (
+              <div className="hidden md:block w-48 aspect-[3/4] rounded-lg shadow-xl overflow-hidden bg-muted border-4 border-background shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={event.posterUrl}
+                  alt={event.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            </div>
-            
+            )}
+
             {/* Title & Badge */}
             <div className="flex-1">
               <div className="flex flex-wrap gap-2 mb-4">
-                <StatusBadge status={eventDetail.status} />
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">
-                  <Tag className="mr-1 h-3 w-3" />
-                  {eventDetail.category}
+                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusInfo.className}`}>
+                  {statusInfo.label}
                 </span>
+                {event.category && (
+                  <span className="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-xs font-semibold text-foreground">
+                    <Tag className="mr-1 h-3 w-3" />
+                    {event.category}
+                  </span>
+                )}
               </div>
               <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4 drop-shadow-md">
-                {eventDetail.title}
+                {event.name}
               </h1>
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-background flex items-center justify-center shadow-sm">
-                  <span className="text-xs font-bold text-moket-navy">
-                    {eventDetail.organization.name.charAt(0)}
+              {event.organizer.name && (
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-background flex items-center justify-center shadow-sm">
+                    <span className="text-xs font-bold text-moket-navy">
+                      {event.organizer.name.charAt(0)}
+                    </span>
+                  </div>
+                  <span className="text-sm font-medium text-foreground drop-shadow-md">
+                    Penyelenggara: {event.organizer.name}
                   </span>
                 </div>
-                <span className="text-sm font-medium text-foreground drop-shadow-md">
-                  Penyelenggara: {eventDetail.organization.name}
-                </span>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -118,17 +163,20 @@ export default function EventDetailPage({
               <div className="bg-secondary p-4 rounded-xl">
                 <Calendar className="h-5 w-5 text-moket-red mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Tanggal</p>
-                <p className="text-sm font-medium">{formatDate(eventDetail.startDate)}</p>
+                <p className="text-sm font-medium">{formatDate(event.startDate)}</p>
               </div>
               <div className="bg-secondary p-4 rounded-xl">
                 <Clock className="h-5 w-5 text-moket-orange mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Waktu</p>
-                <p className="text-sm font-medium">{eventDetail.time}</p>
+                <p className="text-sm font-medium">{formatTime(event.startDate)}</p>
+                {event.endDate && (
+                  <p className="text-xs text-muted-foreground">s/d {formatTime(event.endDate)}</p>
+                )}
               </div>
               <div className="bg-secondary p-4 rounded-xl col-span-2 md:col-span-2">
                 <MapPin className="h-5 w-5 text-moket-navy mb-2" />
                 <p className="text-xs text-muted-foreground mb-1">Lokasi</p>
-                <p className="text-sm font-medium">{eventDetail.location}</p>
+                <p className="text-sm font-medium">{event.location}</p>
               </div>
             </div>
 
@@ -138,12 +186,10 @@ export default function EventDetailPage({
                 <Info className="h-5 w-5 text-moket-red" />
                 Deskripsi Event
               </h2>
-              <div className="text-muted-foreground leading-relaxed">
-                <p>{eventDetail.description}</p>
+              <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                <p>{event.description}</p>
               </div>
             </div>
-
-
           </div>
 
           {/* Right Column - Sticky Ticket Panel */}
@@ -151,43 +197,30 @@ export default function EventDetailPage({
             <div className="sticky top-24 rounded-2xl border border-border bg-card p-6 shadow-lg">
               <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                 <Ticket className="h-5 w-5 text-moket-red" />
-                Pilih Tiket
+                Tiket
               </h3>
 
-              <div className="space-y-4 mb-8">
-                {eventDetail.tickets.map((ticket) => (
-                  <div
-                    key={ticket.id}
-                    className={`p-4 rounded-xl border ${
-                      ticket.status === "sold_out"
-                        ? "border-border bg-muted/50 opacity-60"
-                        : "border-border hover:border-moket-red/50 transition-colors"
-                    }`}
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-semibold text-foreground">{ticket.name}</h4>
-                        <p className="text-sm font-bold text-moket-red">
-                          {formatPrice(ticket.price)}
-                        </p>
-                      </div>
-                      {ticket.status === "sold_out" ? (
-                        <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full font-medium">
-                          Habis
-                        </span>
-                      ) : (
-                        <span className="text-xs bg-moket-red/10 text-moket-red px-2 py-1 rounded-full font-medium">
-                          Sisa {ticket.remaining}
-                        </span>
-                      )}
-                    </div>
+              {/* Tickets — BE belum mengisi data tickets, tampilkan info sementara */}
+              <div className="mb-8">
+                {event.tickets && event.tickets.length > 0 ? (
+                  <div className="space-y-4">
+                    {/* Render tickets ketika BE sudah mengembalikan data */}
+                    <p className="text-sm text-muted-foreground">
+                      {event.tickets.length} jenis tiket tersedia.
+                    </p>
                   </div>
-                ))}
+                ) : (
+                  <div className="p-4 rounded-xl bg-muted/50 border border-border text-center">
+                    <p className="text-sm text-muted-foreground">
+                      Informasi tiket akan segera tersedia.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="pt-6 border-t border-border">
                 {isAvailable ? (
-                  <Link href={`/events/${eventDetail.slug}/purchase`}>
+                  <Link href={`/events/${event.slug}/purchase`}>
                     <Button
                       size="lg"
                       className="w-full bg-moket-red hover:bg-moket-red-dark text-white h-12 text-base font-semibold"
@@ -201,7 +234,7 @@ export default function EventDetailPage({
                     disabled
                     className="w-full h-12 text-base font-semibold"
                   >
-                    Event {eventDetail.status === "completed" ? "Telah Selesai" : "Ditutup"}
+                    Event {event.status === "completed" ? "Telah Selesai" : event.status === "cancelled" ? "Dibatalkan" : "Belum Dibuka"}
                   </Button>
                 )}
               </div>
