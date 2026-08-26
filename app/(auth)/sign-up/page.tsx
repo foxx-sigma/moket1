@@ -42,7 +42,7 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { signIn: googleSignIn, isLoading: isGoogleLoading } = useGoogleSignIn();
+  const { signIn: googleSignIn, isLoading: isGoogleLoading, isGsiReady, hiddenButtonRef } = useGoogleSignIn();
 
   const passwordStrength = getPasswordStrength(password);
   const passwordsMatch = confirmPassword.length > 0 && password === confirmPassword;
@@ -102,6 +102,12 @@ export default function SignUpPage() {
 
   function handleGoogleSignUp() {
     setError(null);
+
+    if (!isGsiReady) {
+      setError("Google Sign-In belum siap, coba lagi sebentar lagi.");
+      return;
+    }
+
     googleSignIn(
       async (idToken) => {
         try {
@@ -303,6 +309,13 @@ export default function SignUpPage() {
             <span className="bg-background px-2">atau</span>
           </div>
         </div>
+
+        {/* Container tersembunyi untuk tombol Google asli (renderButton target) */}
+        <div
+          ref={hiddenButtonRef}
+          style={{ visibility: "hidden", position: "absolute", pointerEvents: "none" }}
+          aria-hidden="true"
+        />
 
         {/* Google OAuth */}
         <Button

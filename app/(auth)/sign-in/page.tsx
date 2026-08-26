@@ -47,7 +47,7 @@ function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { signIn: googleSignIn, isLoading: isGoogleLoading } = useGoogleSignIn();
+  const { signIn: googleSignIn, isLoading: isGoogleLoading, isGsiReady, hiddenButtonRef } = useGoogleSignIn();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -85,8 +85,14 @@ function SignInForm() {
     }
   }
 
-  async function handleGoogleSignIn() {
+  function handleGoogleSignIn() {
     setError(null);
+
+    if (!isGsiReady) {
+      setError("Google Sign-In belum siap, coba lagi sebentar lagi.");
+      return;
+    }
+
     googleSignIn(
       async (idToken) => {
         try {
@@ -224,6 +230,13 @@ function SignInForm() {
             <span className="bg-background px-2">atau</span>
           </div>
         </div>
+
+        {/* Container tersembunyi untuk tombol Google asli (renderButton target) */}
+        <div
+          ref={hiddenButtonRef}
+          style={{ visibility: "hidden", position: "absolute", pointerEvents: "none" }}
+          aria-hidden="true"
+        />
 
         {/* Google OAuth */}
         <Button
