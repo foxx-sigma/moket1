@@ -210,6 +210,21 @@ export async function apiLogout(): Promise<void> {
 }
 
 /**
+ * POST /api/auth/google
+ * Verifikasi Google ID Token di backend (via google/apiclient),
+ * lalu return Sanctum token seperti login biasa.
+ * `idToken` adalah credential JWT yang diterima dari Google Identity Services.
+ */
+export async function apiLoginWithGoogle(idToken: string): Promise<LoginResponse> {
+  return request<LoginResponse>("api/auth/google", {
+    method: "POST",
+    body: JSON.stringify({ id_token: idToken }),
+  });
+}
+
+
+
+/**
  * GET /api/auth/me
  * Mengembalikan user yang sedang login berdasarkan Bearer token.
  * Response backend: { success, message, data: { user: AuthUser } }
