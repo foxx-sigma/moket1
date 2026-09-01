@@ -53,13 +53,16 @@ function getToken(): string | null {
 // Helper: request utama
 // ============================================================
 
-async function request<T>(
-  path: string,
+/**
+ * Helper internal untuk membuat fetch request dengan header standar dan
+ * error handling yang konsisten.
+ * Mengembalikan body JSON mentah (tanpa unwrap envelope).
+ */
+async function fetchJson<T>(
+  url: string,
   options: RequestInit = {},
   authenticated = false
 ): Promise<T> {
-  const url = `${BASE_URL}/${path.replace(/^\//, "")}`;
-
   const token = authenticated ? getToken() : null;
 
   const defaultHeaders: HeadersInit = {
@@ -133,13 +136,43 @@ async function request<T>(
     } satisfies ApiError;
   }
 
+  return body as T;
+}
+
+/**
+ * request<T> — Helper untuk endpoint yang menggunakan envelope ApiResponse
+ * { success: boolean, message: string, data: T } (trait ApiResponse di Laravel).
+ * Secara otomatis meng-unwrap field `data`.
+ */
+async function request<T>(
+  path: string,
+  options: RequestInit = {},
+  authenticated = false
+): Promise<T> {
+  const url = `${BASE_URL}/${path.replace(/^\//, "")}`;
+  const body = await fetchJson<Record<string, unknown>>(url, options, authenticated);
+
   // Unwrap envelope { success, message, data } yang dipakai semua endpoint backend
-  const wrapped = body as Record<string, unknown>;
-  if (wrapped && typeof wrapped === "object" && "data" in wrapped) {
-    return wrapped.data as T;
+  if (body && typeof body === "object" && "data" in body) {
+    return body.data as T;
   }
 
-  return body as T;
+  return body as unknown as T;
+}
+
+/**
+ * requestRaw<T> — Helper untuk endpoint yang TIDAK menggunakan envelope ApiResponse:
+ * - Laravel ResourceCollection (EventListItemResource::collection) → { data: [...], meta: {...} }
+ * - Laravel JsonResource (EventDetailResource) → { data: {...} }
+ * Mengembalikan body JSON mentah tanpa unwrap otomatis.
+ */
+async function requestRaw<T>(
+  path: string,
+  options: RequestInit = {},
+  authenticated = false
+): Promise<T> {
+  const url = `${BASE_URL}/${path.replace(/^\//, "")}`;
+  return fetchJson<T>(url, options, authenticated);
 }
 
 
@@ -396,7 +429,10 @@ export interface PaginatedEvents {
  * GET /api/events
  * Discovery list event dengan filter & pagination.
  * EventController::index mengembalikan Laravel ResourceCollection (pagination)
- * yang TIDAK dibungkus envelope { data, message, success }.
+ * yang TIDAK dibungkus envelope { success, message, data }:
+ * - Non-empty: { data: [...], links: {...}, meta: { current_page, last_page, total, per_page } }
+ * - Empty:     { data: [], meta: { current_page, last_page, total, per_page } }
+ * Menggunakan requestRaw() karena tidak ada envelope ApiResponse trait.
  */
 export async function apiGetEvents(
   params: ListEventsParams = {}
@@ -414,71 +450,19 @@ export async function apiGetEvents(
 
   const qs = query.toString();
   const path = qs ? `api/events?${qs}` : "api/events";
-  const url = `${BASE_URL}/${path}`;
 
-  let res: Response;
-  try {
-    res = await fetch(url, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "ngrok-skip-browser-warning": "true",
-      },
-    });
-  } catch (networkErr) {
-    throw {
-      message: "Tidak dapat terhubung ke server.",
-      errors: undefined,
-      status: 0,
-    } satisfies ApiError;
-  }
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({})) as Record<string, unknown>;
-    throw {
-      message: (err?.message as string) ?? `HTTP ${res.status}`,
-      errors: (err?.errors as Record<string, string[]>) ?? undefined,
-      status: res.status,
-    } satisfies ApiError;
-  }
-
-  return res.json() as Promise<PaginatedEvents>;
+  return requestRaw<PaginatedEvents>(path);
 }
 
 /**
  * GET /api/events/{slug}
  * Detail event (hanya yang published).
- * EventDetailResource mengembalikan { data: { ...fields } } (JsonResource wraps in data key).
+ * EventDetailResource adalah Laravel JsonResource — secara default di-wrap dalam
+ * { data: { ...fields } }, BUKAN envelope { success, message, data } dari ApiResponse trait.
+ * Menggunakan requestRaw() lalu mengambil field `.data`.
  */
 export async function apiGetEventBySlug(slug: string): Promise<EventDetail> {
-  const url = `${BASE_URL}/api/events/${encodeURIComponent(slug)}`;
-
-  let res: Response;
-  try {
-    res = await fetch(url, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "ngrok-skip-browser-warning": "true",
-      },
-    });
-  } catch (networkErr) {
-    throw {
-      message: "Tidak dapat terhubung ke server.",
-      errors: undefined,
-      status: 0,
-    } satisfies ApiError;
-  }
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({})) as Record<string, unknown>;
-    throw {
-      message: (err?.message as string) ?? `HTTP ${res.status}`,
-      errors: (err?.errors as Record<string, string[]>) ?? undefined,
-      status: res.status,
-    } satisfies ApiError;
-  }
-
-  const body = await res.json() as { data: EventDetail };
+  const path = `api/events/${encodeURIComponent(slug)}`;
+  const body = await requestRaw<{ data: EventDetail }>(path);
   return body.data;
 }

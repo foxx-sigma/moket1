@@ -344,9 +344,9 @@ export interface ApiResponse<T> {
 export interface PaginatedResponse<T> {
   data: T[];
   meta: {
-    currentPage: number;
-    lastPage: number;
-    perPage: number;
+    current_page: number;
+    last_page: number;
+    per_page: number;
     total: number;
   };
 }
