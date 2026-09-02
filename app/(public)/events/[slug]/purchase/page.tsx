@@ -38,6 +38,7 @@ export default function PurchasePage({
   const [selectedTicket, setSelectedTicket] = useState("type-2"); // default selected
   const [quantity, setQuantity] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   // Fallback if event is not found
   if (!event) {
@@ -51,12 +52,14 @@ export default function PurchasePage({
       name: "Presale 1",
       price: event.priceStart,
       remaining: 0,
+      maxPerUser: 2,
     },
     {
       id: "type-2",
       name: "Normal Ticket",
       price: event.priceStart + 15000,
       remaining: 150,
+      maxPerUser: 4,
     },
   ];
 
@@ -71,8 +74,12 @@ export default function PurchasePage({
 
   const handleNext = () => {
     if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1);
-      window.scrollTo(0, 0);
+      setCurrentStep((prev) => prev + 1);
+      if (typeof window !== "undefined") {
+        try {
+          window.scrollTo(0, 0);
+        } catch (_) {}
+      }
     } else {
       handlePayment();
     }
@@ -80,7 +87,12 @@ export default function PurchasePage({
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep((prev) => prev - 1);
+      if (typeof window !== "undefined") {
+        try {
+          window.scrollTo(0, 0);
+        } catch (_) {}
+      }
     } else {
       router.push(`/events/${event.slug}`);
     }
@@ -165,15 +177,15 @@ export default function PurchasePage({
                             disabled={ticket.remaining === 0}
                             className="peer sr-only" 
                           />
-                          <Label
-                            htmlFor={ticket.id}
-                            className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${
-                              ticket.remaining === 0
-                                ? "border-muted bg-muted/50 opacity-60 cursor-not-allowed"
-                                : "border-border hover:border-moket-red/50 peer-data-[state=checked]:border-moket-red peer-data-[state=checked]:bg-moket-red/5"
-                            }`}
-                          >
-                            <div>
+                          <div className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-xl transition-all ${
+                            ticket.remaining === 0
+                              ? "border-muted bg-muted/50 opacity-60 cursor-not-allowed"
+                              : "border-border hover:border-moket-red/50 peer-data-[state=checked]:border-moket-red peer-data-[state=checked]:bg-moket-red/5"
+                          }`}>
+                            <Label
+                              htmlFor={ticket.id}
+                              className="flex-1 cursor-pointer"
+                            >
                               <div className="flex items-center gap-2 mb-1">
                                 <h3 className="font-semibold text-base">{ticket.name}</h3>
                                 {ticket.remaining === 0 && (
@@ -181,33 +193,39 @@ export default function PurchasePage({
                                 )}
                               </div>
                               <p className="text-sm font-bold text-moket-red">{formatPrice(ticket.price)}</p>
-                            </div>
+                            </Label>
                             
                             {ticket.remaining > 0 && selectedTicket === ticket.id && (
-                              <div className="mt-4 sm:mt-0 flex items-center gap-4 bg-background p-1.5 rounded-lg border shadow-sm">
-                                <Button 
-                                  type="button" 
-                                  variant="outline" 
-                                  size="icon" 
-                                  className="h-8 w-8 rounded-md"
-                                  onClick={(e) => { e.preventDefault(); setQuantity(Math.max(1, quantity - 1)); }}
-                                  disabled={quantity <= 1}
-                                >
-                                  -
-                                </Button>
-                                <span className="font-semibold w-4 text-center">{quantity}</span>
-                                <Button 
-                                  type="button" 
-                                  variant="outline" 
-                                  size="icon" 
-                                  className="h-8 w-8 rounded-md"
-                                  onClick={(e) => { e.preventDefault(); setQuantity(Math.min(ticket.remaining, quantity + 1)); }}
-                                >
-                                  +
-                                </Button>
+                              <div className="mt-4 sm:mt-0 flex flex-col sm:items-end gap-1">
+                                <div className="flex items-center gap-4 bg-background p-1.5 rounded-lg border shadow-sm">
+                                  <Button 
+                                    type="button" 
+                                    variant="outline" 
+                                    size="icon" 
+                                    aria-label="Kurangi tiket"
+                                    className="h-8 w-8 rounded-md"
+                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setQuantity((prev) => Math.max(1, prev - 1)); }}
+                                    disabled={quantity <= 1}
+                                  >
+                                    -
+                                  </Button>
+                                  <span className="font-semibold w-4 text-center">{quantity}</span>
+                                  <Button 
+                                    type="button" 
+                                    variant="outline" 
+                                    size="icon" 
+                                    aria-label="Tambah tiket"
+                                    className="h-8 w-8 rounded-md"
+                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setQuantity((prev) => Math.min(ticket.maxPerUser, Math.min(ticket.remaining, prev + 1))); }}
+                                    disabled={quantity >= ticket.maxPerUser || quantity >= ticket.remaining}
+                                  >
+                                    +
+                                  </Button>
+                                </div>
+                                <span className="text-[10px] text-muted-foreground">Maks. {ticket.maxPerUser} tiket/user</span>
                               </div>
                             )}
-                          </Label>
+                          </div>
                         </div>
                       ))}
                     </RadioGroup>
@@ -307,6 +325,22 @@ export default function PurchasePage({
                           </div>
                         </div>
                       </div>
+
+                      {/* Checkbox Persetujuan Kebijakan Refund & Non-Refundable */}
+                      <div className="pt-4 border-t border-border space-y-2">
+                        <div className="flex items-start gap-3 p-4 rounded-xl border border-border bg-muted/40 hover:bg-muted/60 transition-colors">
+                          <input
+                            type="checkbox"
+                            id="agree-refund"
+                            checked={agreedToTerms}
+                            onChange={(e) => setAgreedToTerms(e.target.checked)}
+                            className="mt-0.5 h-4 w-4 rounded border-border text-moket-red focus:ring-moket-red cursor-pointer"
+                          />
+                          <Label htmlFor="agree-refund" className="text-xs text-muted-foreground leading-relaxed cursor-pointer font-normal">
+                            Saya telah membaca dan menyetujui ketentuan pemesanan tiket. Saya memahami bahwa pengajuan refund tiket dikenakan potongan biaya layanan sebesar <strong>15%</strong> dari total harga tiket sesuai ketentuan MokeT.
+                          </Label>
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -342,13 +376,19 @@ export default function PurchasePage({
                     </div>
                     
                     <Button 
-                      className="w-full h-12 text-base font-semibold bg-moket-red hover:bg-moket-red-dark text-white"
+                      id="btn-next-step"
+                      className="w-full h-12 text-base font-semibold bg-moket-red hover:bg-moket-red-dark text-white disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={handleNext}
-                      disabled={isProcessing}
+                      disabled={isProcessing || (currentStep === steps.length && !agreedToTerms)}
                     >
                       {isProcessing ? "Memproses..." : currentStep === steps.length ? "Bayar Sekarang" : "Selanjutnya"}
                       {!isProcessing && currentStep < steps.length && <ChevronRight className="ml-2 h-4 w-4" />}
                     </Button>
+                    {currentStep === steps.length && !agreedToTerms && (
+                      <p className="text-[11px] text-amber-600 dark:text-amber-400 text-center mt-2">
+                        * Centang persetujuan kebijakan refund di atas untuk mengaktifkan pembayaran
+                      </p>
+                    )}
                   </div>
                 </CardContent>
               </Card>

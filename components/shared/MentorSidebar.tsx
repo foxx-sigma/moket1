@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Mic2, CalendarClock, Video, User, LogOut, Menu, X, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { apiLogout } from "@/lib/api";
+
+/** Hapus cookie berdasarkan nama */
+function deleteCookie(name: string) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax`;
+}
 
 const sidebarLinks = [
   { href: "/mentor/dashboard", label: "Dashboard", icon: Users },
@@ -16,7 +22,22 @@ const sidebarLinks = [
 
 export function MentorSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setIsLoggingOut(true);
+    try {
+      await apiLogout();
+    } catch {
+      // Ignore API error — tetap lanjutkan logout di sisi client
+    } finally {
+      deleteCookie("moket_session");
+      deleteCookie("moket_role");
+      router.replace("/sign-in");
+    }
+  }
 
   return (
     <>
@@ -69,9 +90,14 @@ export function MentorSidebar() {
         </div>
 
         <div className="p-4 border-t border-border">
-          <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+          >
             <LogOut className="h-4 w-4" />
-            Keluar
+            {isLoggingOut ? "Keluar..." : "Keluar"}
           </Button>
         </div>
       </aside>

@@ -52,3 +52,12 @@ AGENTS.md
 plan2.md
 Database_Dictionary.md
 implementation_plan1.md
+TEST_CASES.md
+USER_MANUAL.md
+
+
+# cypress
+/cypress
+cypress.config.ts
+cypress/
+

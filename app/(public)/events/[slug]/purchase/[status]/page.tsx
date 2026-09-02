@@ -37,6 +37,16 @@ const statusConfig = {
     primaryAction: { label: "Coba Lagi", href: "BACK" },
     secondaryAction: { label: "Kembali ke Beranda", href: "/" },
   },
+  expired: {
+    icon: Clock,
+    color: "text-neutral-500",
+    bgColor: "bg-neutral-500/10",
+    borderColor: "border-neutral-200",
+    title: "Pembayaran Kedaluwarsa",
+    description: "Batas waktu pembayaran telah habis. Tiket kamu telah dilepaskan kembali ke kuota umum.",
+    primaryAction: { label: "Pesan Ulang Tiket", href: "BACK" },
+    secondaryAction: { label: "Kembali ke Beranda", href: "/" },
+  },
 };
 
 export default function PaymentStatusPage({
@@ -49,7 +59,7 @@ export default function PaymentStatusPage({
 
   const event = mockEvents.find((e) => e.slug === slug);
   
-  if (!event || !["success", "pending", "failed"].includes(status)) {
+  if (!event || !["success", "pending", "failed", "expired"].includes(status)) {
     notFound();
   }
 
